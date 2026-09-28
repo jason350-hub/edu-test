@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>民國教育委員會 - 三學階八大領域經典復刻版</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: 懷舊像素風格字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'DotGothic16', 'Noto Sans TC', sans-serif;
+      background-color: #080a10;
+      user-select: none;
+    }
+    /* 街機 CRT 掃描線光影濾鏡 */
+    .crt::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.32) 50%);
+      background-size: 100% 4px;
+      z-index: 40;
+      pointer-events: none;
+    }
+    .arcade-border {
+      border: 5px solid #fbbf24;
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.35), inset 0 0 18px rgba(0, 0, 0, 0.9);
+    }
+    .text-pixel-shadow {
+      text-shadow: 2px 2px 0px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    }
+    .gold-glow {
+      box-shadow: 0 0 18px rgba(251, 191, 36, 0.7);
+    }
+    .option-btn {
+      transition: all 0.12s ease;
+      box-shadow: 0 5px 0px #1e293b, 0 8px 12px rgba(0,0,0,0.5);
+    }
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0px #1e293b, 0 10px 16px rgba(0,0,0,0.6);
+    }
+    .option-btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0px #1e293b;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+    .blink {
+      animation: blink 0.85s infinite;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .shake {
+      animation: shake 0.35s ease-in-out;
+    }
+    /* 骰子旋轉動畫 */
+    .dice-container {
+      perspective: 600px;
+    }
+    .dice-box {
+      transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+    .dice-rolling {
+      animation: diceRollAnim 0.5s infinite ease-in-out;
+    }
+    @keyframes diceRollAnim {
+      0% { transform: rotate(0deg) scale(0.9); }
+      25% { transform: rotate(90deg) scale(1.1); }
+      50% { transform: rotate(180deg) scale(0.9); }
+      75% { transform: rotate(270deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1.0); }
+    }
+    /* 棋盤格子懸浮與焦點樣式 */
+    .tile-active {
+      border-color: #facc15 !important;
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.35), rgba(245, 158, 11, 0.25)) !important;
+      transform: scale(1.04);
+      z-index: 25;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col items-center justify-center p-2 sm:p-4">
+
+  <!-- 街機主外框容器 -->
+  <div class="relative w-full max-w-5xl bg-slate-900 rounded-2xl arcade-border crt overflow-hidden flex flex-col shadow-2xl">
+    
+    <!-- 頂部大型機台霓虹標題列 -->
+    <header class="bg-gradient-to-r from-red-800 via-amber-600 to-red-800 py-2.5 px-4 sm:px-6 flex items-center justify-between border-b-4 border-yellow-500 z-50">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span class="inline-block w-3.5 h-3.5 rounded-full bg-red-400 animate-ping"></span>
+        <h1 class="text-base sm:text-2xl font-black tracking-widest text-yellow-200 text-pixel-shadow flex items-center gap-1.5">
+          ★ 民國教育委員會 ★
+        </h1>
+        <span class="hidden md:inline-block text-[11px] bg-yellow-400 text-slate-950 font-black px-2 py-0.5 rounded shadow">
+          國小・國中・高中 八大學科雙六巡迴版
+        </span>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold text-yellow-100">
+        <button id="btn-sound-toggle" class="hover:text-white transition flex items-center gap-1 bg-black/40 px-2.5 py-1.5 rounded-lg border border-yellow-500/50">
+          <span id="sound-icon">🔊</span> <span id="sound-status">音效開</span>
+        </button>
+        <button id="btn-open-bank" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg border-2 border-blue-300 shadow active:translate-y-0.5 transition flex items-center gap-1">
+          <span>📂</span> <span>各類科題庫管理</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 遊戲主舞台區域 -->
+    <main id="game-stage" class="relative p-3 sm:p-5 min-h-[570px] flex flex-col justify-between z-30">
+      
+      <!-- [畫面 1: 首頁 / 入學與學習階段選擇] -->
+      <section id="screen-start" class="flex flex-col items-center justify-center my-auto text-center gap-4 py-4">
+        <div class="space-y-1.5">
+          <div class="text-4xl sm:text-6xl font-black text-amber-300 text-pixel-shadow tracking-wider">
+            民國教育委員會
+          </div>
+          <p class="text-xs sm:text-sm text-yellow-100/90 font-bold tracking-wide">
+            1990s 經典大型電玩復刻・大富翁擲骰走格・八大領域學力全考驗
+          </p>
+        </div>
+
+        <!-- 選擇初始就讀階段 -->
+        <div class="bg-slate-800/90 border-2 border-yellow-500/80 rounded-xl p-3 sm:p-4 w-full max-w-xl text-left shadow-lg">
+          <div class="text-xs sm:text-sm font-bold text-yellow-300 mb-2 flex items-center justify-between border-b border-slate-700 pb-1.5">
+            <span>🎯 請選擇您的挑戰就讀階段：</span>
+            <span class="text-[11px] text-slate-400">各階段學科深度皆不同</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5" id="stage-picker-container">
+            <button class="stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-yellow-400 bg-amber-500/20 text-yellow-200 font-black text-xs sm:text-sm flex flex-col items-center transition" data-level="1">
+              <span class="text-lg sm:text-xl">🎒</span>
+              <span>國民小學</span>
+              <span class="text-[10px] text-amber-300/80 mt-0.5 font-normal">基礎八大領域</span>
+            </button>
+            <button class="stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-slate-700 bg-slate-800/80 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500" data-level="2">
+              <span class="text-lg sm:text-xl">🏫</span>
+              <span>國民中學</span>
+              <span class="text-[10px] text-slate-400 mt-0.5 font-normal">進階觀念測驗</span>
+            </button>
+            <button class="stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-slate-700 bg-slate-800/80 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500" data-level="3">
+              <span class="text-lg sm:text-xl">🏛️</span>
+              <span>高級中學</span>
+              <span class="text-[10px] text-slate-400 mt-0.5 font-normal">大學前哨考驗</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 8 大類科與行進規則簡介 -->
+        <div class="bg-slate-800/85 border border-slate-700 rounded-xl p-3 sm:p-4 max-w-xl text-left text-xs text-slate-200 leading-relaxed space-y-2 shadow-inner">
+          <div class="text-yellow-300 font-bold border-b border-slate-700/80 pb-1 flex justify-between">
+            <span>📜【 考核規定與 8 大學科指南 】</span>
+            <span class="text-emerald-400">目前題庫共 <b id="home-q-count">0</b> 題</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] text-yellow-100/90 font-bold">
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">📖 國文領域</span>
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🔤 英文領域</span>
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">📐 數學領域</span>
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🔬 自然領域</span>
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🌍 社會領域</span>
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🎨 藝術領域</span>
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">⚽ 健體領域</span>
+            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">💡 生活百科</span>
+          </div>
+          <p class="text-[11px] text-slate-300">
+            ★ <strong>過三關解鎖升學：</strong>於校園地圖擲骰停駐各科，每次測驗需連續完成 <strong>5 題挑戰</strong>。累積<strong>通過 3 次關卡</strong>，即可參加升級／畢業大檢定！
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 items-center justify-center pt-1">
+          <button id="btn-start-game" class="px-8 py-3 bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-xl sm:text-2xl rounded-xl border-4 border-yellow-200 shadow-xl active:translate-y-1 transition blink">
+            🕹️ 投入代幣 開始挑戰 (START)
+          </button>
+        </div>
+      </section>
+
+      <!-- [畫面 2: 大富翁雙六地圖路線] -->
+      <section id="screen-board" class="hidden flex flex-col justify-between flex-grow gap-3">
+        <!-- 頂部學階與進度狀態看板 -->
+        <div class="bg-slate-800/95 border-2 border-yellow-500/70 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow">
+          <div class="flex items-center gap-2.5">
+            <span id="board-rank-badge" class="bg-amber-600 text-white font-black text-xs sm:text-sm px-3 py-1 rounded border border-amber-300 shadow">
+              國民小學
+            </span>
+            <!-- 通過 3 關卡指示印章 -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs text-slate-300 font-bold">三關驗收進度:</span>
+              <div id="checkpoints-visual" class="flex gap-1">
+                <!-- 動態注入 3 顆印章 -->
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <!-- 愛心 -->
+            <div class="flex items-center gap-1">
+              <span class="text-xs text-slate-400 font-bold">體力:</span>
+              <div id="board-lives" class="flex text-lg sm:text-xl">❤️❤️❤️</div>
+            </div>
+            <!-- 分數 -->
+            <div>
+              <span class="text-xs text-slate-400 font-bold">累積積分:</span>
+              <span id="board-score" class="text-lg sm:text-xl font-black text-yellow-300 ml-1">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 棋盤格地圖區域 (14 格校園地圖，涵蓋 8 大領域) -->
+        <div class="bg-slate-950/90 border-2 border-slate-700 rounded-2xl p-2.5 sm:p-3 relative shadow-inner overflow-hidden">
+          <div class="text-[11px] font-bold text-slate-400 mb-2 flex items-center justify-between px-1">
+            <span id="board-stage-title-hint">🗺️ 國小校園八大學科巡迴地圖 (走訪各館進行 5 題測驗，通過 3 關啟動升級考)</span>
+            <span id="board-status-hint" class="text-yellow-400 font-bold">請點擊投擲骰子！</span>
+          </div>
+          
+          <!-- 棋盤格柵格 -->
+          <div id="tiles-grid" class="grid grid-cols-4 sm:grid-cols-7 gap-2">
+            <!-- JS 動態生成 14 格 -->
+          </div>
+        </div>
+
+        <!-- 底部互動操作欄 (投骰控制、升級測驗快速通道) -->
+        <div class="bg-slate-800/90 border-2 border-yellow-500/50 rounded-xl p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-3">
+          <!-- 骰子區域 -->
+          <div class="flex items-center gap-3">
+            <div class="dice-container w-13 h-13 sm:w-14 sm:h-14 bg-gradient-to-br from-amber-100 to-amber-300 rounded-xl border-2 border-yellow-600 flex items-center justify-center shadow-lg">
+              <div id="dice-face" class="dice-box text-3xl sm:text-4xl font-black text-slate-900">
+                ⚅
+              </div>
+            </div>
+            <div>
+              <button id="btn-roll-dice" class="px-5 py-2 bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-base sm:text-lg rounded-xl border-2 border-yellow-200 shadow-lg active:translate-y-0.5 transition">
+                🎲 投擲骰子 (ROLL)
+              </button>
+              <div id="roll-desc" class="text-[11px] text-slate-300 mt-0.5">點擊按鈕或按空白鍵擲骰</div>
+            </div>
+          </div>
+
+          <!-- 升級測驗解鎖按鈕 -->
+          <div class="flex items-center gap-2">
+            <button id="btn-promotion-exam" disabled class="px-4 py-2.5 bg-slate-700 text-slate-400 font-black text-xs sm:text-sm rounded-xl border-2 border-slate-600 shadow cursor-not-allowed transition flex items-center gap-1.5">
+              <span>🎓</span>
+              <span id="btn-promo-text">升級檢定測驗 (需滿3關)</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- [畫面 3: 5 題測驗作答主畫面] -->
+      <section id="screen-quiz" class="hidden flex flex-col justify-between h-full flex-grow gap-3">
+        <!-- 狀態列 (測驗類型、當前題號 1/5、愛心、計時) -->
+        <div class="flex flex-wrap items-center justify-between bg-slate-800/95 border-2 border-yellow-500/60 rounded-xl p-3 sm:px-5 shadow">
+          <div class="flex items-center gap-3">
+            <span id="quiz-badge-mode" class="bg-indigo-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded border border-indigo-300">
+              關卡測驗 (第 1/3 關)
+            </span>
+            <span class="text-xs sm:text-sm font-bold text-slate-300">
+              題數進度：<span id="quiz-question-index" class="text-yellow-300 text-base font-black">1 / 5</span> 題
+            </span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <!-- 愛心生命值 -->
+            <div class="flex items-center gap-1">
+              <span class="text-xs text-slate-400 font-bold mr-1">體力:</span>
+              <div id="quiz-lives" class="flex text-lg sm:text-xl">
+                <span>❤️</span><span>❤️</span><span>❤️</span>
+              </div>
+            </div>
+            <!-- 本輪答對計數 -->
+            <div>
+              <span class="text-xs text-slate-400 font-bold">本輪答對:</span>
+              <span id="quiz-round-correct" class="text-base font-black text-emerald-400 ml-1">0</span>
+              <span class="text-xs text-slate-500">/ 5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 倒數計時條 -->
+        <div class="w-full bg-slate-950 rounded-full h-3 border-2 border-slate-700 overflow-hidden relative">
+          <div id="timer-bar" class="h-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-red-500 transition-all duration-100 ease-linear" style="width: 100%;"></div>
+          <span id="timer-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white drop-shadow">10.0 秒</span>
+        </div>
+
+        <!-- 考題中央看板 -->
+        <div id="question-box" class="bg-slate-800/95 border-4 border-yellow-400/80 rounded-2xl p-4 sm:p-6 min-h-[145px] flex flex-col justify-center relative shadow-xl">
+          <div class="flex items-center justify-between mb-2">
+            <span id="q-category" class="bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded shadow">
+              國文領域
+            </span>
+            <span id="q-number" class="text-xs font-bold text-slate-400">考題 #1</span>
+          </div>
+          <h2 id="q-text" class="text-base sm:text-xl font-bold text-white leading-relaxed tracking-wide">
+            考題載入中...
+          </h2>
+        </div>
+
+        <!-- 4 個選項按鈕 (街機大按鍵) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          <button class="option-btn bg-slate-800 border-2 border-sky-400 hover:bg-sky-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="0">
+            <span class="w-7 h-7 rounded-lg bg-sky-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">1</span>
+            <span class="option-text flex-1">選項 A</span>
+          </button>
+          <button class="option-btn bg-slate-800 border-2 border-emerald-400 hover:bg-emerald-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="1">
+            <span class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">2</span>
+            <span class="option-text flex-1">選項 B</span>
+          </button>
+          <button class="option-btn bg-slate-800 border-2 border-amber-400 hover:bg-amber-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="2">
+            <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">3</span>
+            <span class="option-text flex-1">選項 C</span>
+          </button>
+          <button class="option-btn bg-slate-800 border-2 border-purple-400 hover:bg-purple-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="3">
+            <span class="w-7 h-7 rounded-lg bg-purple-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">4</span>
+            <span class="option-text flex-1">選項 D</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- [畫面 4: 結算 / 畢業通關 / 留級重修] -->
+      <section id="screen-result" class="hidden flex flex-col items-center justify-center my-auto text-center gap-4 py-5">
+        <div id="result-icon" class="text-7xl">🎓</div>
+        <div class="space-y-1">
+          <h2 id="result-title" class="text-3xl sm:text-5xl font-black text-yellow-300 text-pixel-shadow">
+            恭喜升學！
+          </h2>
+          <p id="result-desc" class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto">
+            表現優異，順利通過全階段升級檢定！
+          </p>
+        </div>
+
+        <div class="bg-slate-800 border-2 border-yellow-500/50 rounded-xl p-4 w-full max-w-md grid grid-cols-2 gap-3 text-center shadow-lg">
+          <div>
+            <div class="text-xs text-slate-400">最終榮獲學歷</div>
+            <div id="res-final-rank" class="text-base sm:text-lg font-black text-amber-300 mt-1">高級中學 畢業</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400">總學力積分</div>
+            <div id="res-final-score" class="text-2xl font-black text-emerald-400 mt-0.5">3200</div>
+          </div>
+          <div class="col-span-2 border-t border-slate-700 pt-2 flex justify-around text-xs text-slate-300">
+            <span>答對題數：<b id="res-correct-cnt" class="text-yellow-300">0</b> 題</span>
+            <span>答錯題數：<b id="res-wrong-cnt" class="text-red-400">0</b> 題</span>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button id="btn-restart" class="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-black text-sm rounded-xl border-2 border-yellow-200 shadow transition active:translate-y-0.5">
+            🔄 重新挑戰 (RETRY)
+          </button>
+          <button id="btn-back-home" class="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs rounded-xl border border-slate-500 transition">
+            返回階段首頁
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 底部操作提示 -->
+    <footer class="bg-slate-950/90 py-2 px-4 sm:px-6 border-t-2 border-slate-800 flex flex-wrap items-center justify-between text-[11px] text-slate-400 z-50">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+        <span>民國教育委員會 (國小・國中・高中特裝版)</span>
+      </div>
+      <div class="flex gap-3">
+        <span>快捷鍵：[1-4] 答題 / [空白鍵] 擲骰</span>
+        <span>每次測驗：至少 5 題</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 支援依「各類科領域」上傳與管理的題庫 Modal 彈窗 -->
+  <!-- ======================================================== -->
+  <div id="modal-bank" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-slate-900 border-4 border-yellow-500 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="bg-slate-800 p-3.5 border-b-2 border-yellow-500/50 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📂</span>
+          <h2 class="text-sm sm:text-base font-black text-yellow-300">八大學科領域題庫管理與上傳中心</h2>
+        </div>
+        <button id="btn-close-bank" class="text-slate-400 hover:text-white text-2xl font-bold px-2">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-3 sm:p-5 flex-grow overflow-y-auto space-y-4 text-xs">
+        
+        <!-- 上傳區塊 (支援依指定領域類科匯入，或由檔案標籤自動識別) -->
+        <div class="bg-slate-800/80 border-2 border-dashed border-blue-400/60 rounded-xl p-3.5 sm:p-4 text-center">
+          <div class="text-2xl mb-1">📥</div>
+          <h3 class="text-sm font-bold text-yellow-200">上傳自訂題庫檔案 (支援 JSON 與 CSV 格式)</h3>
+          <p class="text-slate-300 mt-1 mb-2.5">
+            可依「國文、英文、數學、自然、社會、藝術、健體、生活百科」指定科目匯入，亦可包含在檔案欄位中自動分流。
+          </p>
+
+          <!-- 匯入時的特定類科指派 -->
+          <div class="inline-flex flex-wrap items-center justify-center gap-2 bg-slate-900/80 p-2 rounded-lg border border-slate-700 mb-3 text-left">
+            <label class="text-yellow-300 font-bold">匯入時指派類科：</label>
+            <select id="upload-target-category" class="bg-slate-950 border border-slate-700 text-white rounded p-1 text-xs">
+              <option value="AUTO">自動從檔案欄位讀取類科</option>
+              <option value="國文">強制歸為【國文領域】</option>
+              <option value="英文">強制歸為【英文領域】</option>
+              <option value="數學">強制歸為【數學領域】</option>
+              <option value="自然">強制歸為【自然領域】</option>
+              <option value="社會">強制歸為【社會領域】</option>
+              <option value="藝術">強制歸為【藝術領域】</option>
+              <option value="健康與體育">強制歸為【健康與體育】</option>
+              <option value="生活百科">強制歸為【生活百科】</option>
+            </select>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <input type="file" id="file-uploader" accept=".json,.csv" class="hidden">
+            <button id="btn-choose-file" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg border border-blue-300 shadow">
+              選取檔案匯入
+            </button>
+            <button id="btn-download-template-json" class="bg-slate-700 hover:bg-slate-600 text-yellow-200 px-3 py-1.5 rounded border border-slate-500">
+              下載八科 JSON 範本
+            </button>
+            <button id="btn-download-template-csv" class="bg-slate-700 hover:bg-slate-600 text-yellow-200 px-3 py-1.5 rounded border border-slate-500">
+              下載八科 CSV 範本
+            </button>
+          </div>
+          <div id="upload-status" class="font-bold mt-2 text-emerald-400 hidden"></div>
+        </div>
+
+        <!-- 手動新增單題 -->
+        <details class="bg-slate-800/80 rounded-xl border border-slate-700 p-3">
+          <summary class="font-bold text-yellow-300 cursor-pointer flex items-center justify-between">
+            <span>➕ 手動快速新增單題</span>
+            <span class="text-[11px] text-slate-400">點擊展開</span>
+          </summary>
+          <form id="form-add-q" class="mt-3 space-y-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block text-slate-300 mb-1">學科領域</label>
+                <select id="new-q-cat" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
+                  <option value="國文">國文</option>
+                  <option value="英文">英文</option>
+                  <option value="數學">數學</option>
+                  <option value="自然">自然</option>
+                  <option value="社會">社會</option>
+                  <option value="藝術">藝術</option>
+                  <option value="健康與體育">健康與體育</option>
+                  <option value="生活百科">生活百科</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-slate-300 mb-1">適用學習階段</label>
+                <select id="new-q-level" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
+                  <option value="1">1 - 國民小學</option>
+                  <option value="2">2 - 國民中學</option>
+                  <option value="3">3 - 高級中學</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-slate-300 mb-1">題目內容</label>
+              <textarea id="new-q-text" rows="2" placeholder="請輸入完整題目..." required class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <input id="new-opt-0" type="text" placeholder="選項 1" required class="bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
+              <input id="new-opt-1" type="text" placeholder="選項 2" required class="bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
+              <input id="new-opt-2" type="text" placeholder="選項 3" required class="bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
+              <input id="new-opt-3" type="text" placeholder="選項 4" required class="bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-300 mb-1">正確答案 (請指定哪一個選項正確)</label>
+              <select id="new-q-correct" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
+                <option value="0">選項 1 (A)</option>
+                <option value="1">選項 2 (B)</option>
+                <option value="2">選項 3 (C)</option>
+                <option value="3">選項 4 (D)</option>
+              </select>
+            </div>
+            <button type="submit" class="w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded shadow">
+              確認新增此題
+            </button>
+          </form>
+        </details>
+
+        <!-- 題庫篩選檢視與管理列表 -->
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-yellow-300">題庫清單 (<span id="modal-q-count">0</span> 題)</h3>
+              <!-- 篩選學階 -->
+              <select id="filter-level" class="bg-slate-800 border border-slate-600 text-yellow-200 rounded px-1.5 py-0.5 text-xs">
+                <option value="ALL">全部學階</option>
+                <option value="1">國小</option>
+                <option value="2">國中</option>
+                <option value="3">高中</option>
+              </select>
+              <!-- 篩選領域 -->
+              <select id="filter-category" class="bg-slate-800 border border-slate-600 text-yellow-200 rounded px-1.5 py-0.5 text-xs">
+                <option value="ALL">全部學科領域</option>
+                <option value="國文">國文</option>
+                <option value="英文">英文</option>
+                <option value="數學">數學</option>
+                <option value="自然">自然</option>
+                <option value="社會">社會</option>
+                <option value="藝術">藝術</option>
+                <option value="健康與體育">健康與體育</option>
+                <option value="生活百科">生活百科</option>
+              </select>
+            </div>
+            <div class="flex gap-2">
+              <button id="btn-export-json" class="bg-slate-700 hover:bg-slate-600 px-2 py-1 rounded text-slate-200">
+                匯出題庫 JSON
+              </button>
+              <button id="btn-reset-default" class="bg-red-800 hover:bg-red-700 px-2 py-1 rounded text-white">
+                還原預設題庫
+              </button>
+            </div>
+          </div>
+
+          <div class="max-h-52 overflow-y-auto border border-slate-700 rounded-lg">
+            <table class="w-full text-left text-[11px] text-slate-300">
+              <thead class="bg-slate-800 text-yellow-300 sticky top-0">
+                <tr>
+                  <th class="p-2 w-20">學科領域</th>
+                  <th class="p-2 w-16">階段</th>
+                  <th class="p-2">題目內文</th>
+                  <th class="p-2 w-28">正確答案</th>
+                  <th class="p-2 w-10 text-center">刪除</th>
+                </tr>
+              </thead>
+              <tbody id="bank-table-body" class="divide-y divide-slate-800 bg-slate-900/90">
+                <!-- 動態注入 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="bg-slate-800 p-3 px-5 border-t border-slate-700 flex justify-end">
+        <button id="btn-modal-done" class="px-5 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold text-xs rounded-lg transition">
+          完成設定並關閉
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 核心遊戲邏輯程式碼 -->
+  <!-- ======================================================== -->
+  <script>
+    class ArcadeSoundFX {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'square', duration = 0.1, gain = 0.1) {
+        if (!this.enabled) return;
+        this.init();
+        try {
+          const osc = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          g.gain.setValueAtTime(gain, this.ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(g);
+          g.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+      coin() {
+        this.playTone(987.77, 'sine', 0.08, 0.15);
+        setTimeout(() => this.playTone(1318.51, 'sine', 0.2, 0.2), 85);
+      }
+      diceRoll() {
+        for(let i = 0; i < 4; i++) {
+          setTimeout(() => this.playTone(400 + Math.random() * 320, 'sawtooth', 0.04, 0.08), i * 45);
+        }
+      }
+      step() {
+        this.playTone(720, 'square', 0.05, 0.09);
+      }
+      correct() {
+        this.playTone(523.25, 'triangle', 0.1, 0.2);
+        setTimeout(() => this.playTone(659.25, 'triangle', 0.1, 0.2), 90);
+        setTimeout(() => this.playTone(783.99, 'triangle', 0.12, 0.2), 180);
+        setTimeout(() => this.playTone(1046.50, 'triangle', 0.25, 0.25), 270);
+      }
+      wrong() {
+        this.playTone(220, 'sawtooth', 0.15, 0.25);
+        setTimeout(() => this.playTone(164.81, 'sawtooth', 0.25, 0.3), 150);
+      }
+      tick() {
+        this.playTone(850, 'square', 0.03, 0.04);
+      }
+      fanfare() {
+        const notes = [440, 554, 659, 880, 1108];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => this.playTone(freq, 'triangle', 0.22, 0.25), idx * 105);
+        });
+      }
+      heal() {
+        this.playTone(400, 'sine', 0.1, 0.15);
+        setTimeout(() => this.playTone(600, 'sine', 0.1, 0.2), 90);
+        setTimeout(() => this.playTone(800, 'sine', 0.2, 0.25), 180);
+      }
+    }
+
+    const sound = new ArcadeSoundFX();
+
+    // 嚴格涵蓋：國小(1)、國中(2)、高中(3) 及 8 大學科領域
+    const DEFAULT_QUESTION_BANK = [
+      // ==========================================
+      // [等級 1: 國民小學] - 八大領域
+      // ==========================================
+      { id: 101, level: 1, category: "國文", q: "成語「三顧茅廬」中，劉備總共拜訪諸葛亮幾次才見到面？", options: ["1次", "2次", "3次", "4次"], ans: 2 },
+      { id: 102, level: 1, category: "國文", q: "唐詩「床前明月光，疑是地上霜」的作者是唐代哪位大詩人？", options: ["杜甫", "白居易", "李白", "王維"], ans: 2 },
+      { id: 103, level: 1, category: "英文", q: "英文單字「Apple」在繁體中文中是指哪一種常見水果？", options: ["香蕉", "蘋果", "橘子", "西瓜"], ans: 1 },
+      { id: 104, level: 1, category: "英文", q: "星期一的英文單字是下列哪一個？", options: ["Sunday", "Monday", "Tuesday", "Friday"], ans: 1 },
+      { id: 105, level: 1, category: "數學", q: "小明買了一本 35 元的筆記本，付了 100 元鈔票，應找回多少元？", options: ["55元", "65元", "75元", "85元"], ans: 1 },
+      { id: 106, level: 1, category: "數學", q: "正方形有幾條邊、幾個直角？", options: ["3邊3角", "4邊4角", "5邊5角", "6邊6角"], ans: 1 },
+      { id: 107, level: 1, category: "自然", q: "綠色植物行「光合作用」時，主要吸收哪種氣體並釋放出氧氣？", options: ["氮氣", "二氧化碳", "氦氣", "一氧化碳"], ans: 1 },
+      { id: 108, level: 1, category: "自然", q: "下列哪一種動物屬於會生蛋的「卵生」動物？", options: ["海豚", "企鵝", "小狗", "袋鼠"], ans: 1 },
+      { id: 109, level: 1, category: "社會", q: "台灣本島的第一高峰是哪一座山峰？", options: ["阿里山", "玉山", "雪山", "陽明山"], ans: 1 },
+      { id: 110, level: 1, category: "社會", q: "端午節包粽子、划龍舟，相傳是為了紀念哪一位古代愛國詩人？", options: ["屈原", "李白", "蘇軾", "文天祥"], ans: 0 },
+      { id: 111, level: 1, category: "藝術", q: "在色彩學中，繪畫顏料的「三原色」是指哪三種顏色？", options: ["紅、黃、藍", "紅、綠、藍", "黑、白、灰", "黃、綠、紫"], ans: 0 },
+      { id: 112, level: 1, category: "藝術", q: "音樂課吹奏的高音直笛，笛身背面有幾個用大拇指按住的孔？", options: ["1個", "2個", "3個", "沒有孔"], ans: 0 },
+      { id: 113, level: 1, category: "健康與體育", q: "預防腸病毒與細菌感染，正確濕洗手口訣「內外夾弓大立完」至少需洗多久？", options: ["5秒", "10秒", "約 40 至 60 秒", "2分鐘"], ans: 2 },
+      { id: 114, level: 1, category: "健康與體育", q: "在田徑跑步比賽中，跑道直線衝刺抵達終點時應如何衝線？", options: ["突然停下", "身體前傾壓線通過", "跳躍回頭看", "用手推隔壁選手"], ans: 1 },
+      { id: 115, level: 1, category: "生活百科", q: "在台灣街道上的郵筒，若要寄送「限時專送」信件應投進哪種顏色郵筒？", options: ["紅色郵筒", "綠色郵筒", "黃色郵筒", "藍色郵筒"], ans: 0 },
+      { id: 116, level: 1, category: "生活百科", q: "遇到火災濃煙時，下列哪一項是正確的逃生避難動作？", options: ["乘坐電梯下樓", "採低姿勢沿牆爬行避難", "站高大口呼吸", "躲進沒有對外窗的浴室"], ans: 1 },
+
+      // ==========================================
+      // [等級 2: 國民中學] - 八大領域
+      // ==========================================
+      { id: 201, level: 2, category: "國文", q: "諸葛亮在《出師表》中寫道「臣本布衣，躬耕於南陽」，其中「布衣」是指？", options: ["名門貴族", "平民百姓", "出家僧侶", "隱世名醫"], ans: 1 },
+      { id: 202, level: 2, category: "國文", q: "「忽如一夜春風來，千樹萬樹梨花開」詩句中所描寫的真實景象是？", options: ["梨花盛開", "雪景", "梅花綻放", "柳絮飛舞"], ans: 1 },
+      { id: 203, level: 2, category: "英文", q: "句子「She has lived in Taipei _____ five years.」空格應填入？", options: ["since", "for", "at", "during"], ans: 1 },
+      { id: 204, level: 2, category: "英文", q: "「Water boils at 100 degrees Celsius.」此句子應使用哪種時態？", options: ["現在完成式", "現在簡單式 (表達客觀真理)", "過去式", "未來式"], ans: 1 },
+      { id: 205, level: 2, category: "數學", q: "在直角三角形中，兩股長分別為 3 與 4，根據畢氏定理，斜邊長為多少？", options: ["5", "6", "7", "8"], ans: 0 },
+      { id: 206, level: 2, category: "數學", q: "一元二次方程式 x² - 5x + 6 = 0 的兩個解分別是多少？", options: ["x = 1 或 6", "x = 2 或 3", "x = -2 或 -3", "x = 0 或 5"], ans: 1 },
+      { id: 207, level: 2, category: "自然", q: "在標準一大氣壓下，水（H₂O）的沸點與冰點分別是幾度？", options: ["80℃ / 0℃", "100℃ / 0℃", "120℃ / -4℃", "100℃ / 4℃"], ans: 1 },
+      { id: 208, level: 2, category: "自然", q: "下列哪一種金屬元素在常溫常壓（25℃）下呈現液態？", options: ["汞 (水銀)", "金", "鐵", "銅"], ans: 0 },
+      { id: 209, level: 2, category: "社會", q: "清末簽訂將台灣與澎湖群島割讓給日本的不平等條約是？", options: ["南京條約", "北京條約", "馬關條約", "辛丑條約"], ans: 2 },
+      { id: 210, level: 2, category: "社會", q: "中華民國憲法規範中央政府體制，採行何種分立制度？", options: ["三權分立", "四權分立", "五權分立", "內閣單一制"], ans: 2 },
+      { id: 211, level: 2, category: "藝術", q: "文藝復興三傑中，創作著名壁畫《最後的晚餐》與《蒙娜麗莎》的是？", options: ["米開朗基羅", "達文西", "拉斐爾", "梵谷"], ans: 1 },
+      { id: 212, level: 2, category: "藝術", q: "古典音樂神童莫札特（Mozart）出生於哪一個歐洲國家？", options: ["奧地利", "德國", "法國", "義大利"], ans: 0 },
+      { id: 213, level: 2, category: "健康與體育", q: "實施成人心肺復甦術 (CPR) 時，胸外按壓與人工呼吸的標準比率為？", options: ["15：2", "30：2", "20：1", "50：2"], ans: 1 },
+      { id: 214, level: 2, category: "健康與體育", q: "在標準籃球比賽中，球員被吹判幾次犯規即必須離場（犯滿畢業）？", options: ["4次", "5次", "6次", "7次"], ans: 1 },
+      { id: 215, level: 2, category: "生活百科", q: "台灣發生地震時，內政部消防署推廣的避難三步驟順序為？", options: ["趴下、掩護、穩住", "快跑、開門、打卡", "關瓦斯、拿皮包、跑下樓", "躲進衣櫥、打電話、大叫"], ans: 0 },
+      { id: 216, level: 2, category: "生活百科", q: "一般小型家用滅火器的正確操作口訣為何？", options: ["拉、瞄、壓、掃", "充、脫、泡、蓋、送", "看、聽、聞、摸", "按、推、搖、噴"], ans: 0 },
+
+      // ==========================================
+      // [等級 3: 高級中學] - 八大領域
+      // ==========================================
+      { id: 301, level: 3, category: "國文", q: "蘇軾《赤壁賦》「寄蜉蝣於天地，渺滄海之一粟」，抒發何種生命情懷？", options: ["生命短暫渺小之慨", "功成名就的驕傲", "及時行樂的狂放", "對大自然無窮的讚嘆"], ans: 0 },
+      { id: 302, level: 3, category: "國文", q: "先秦諸子百家中，主張「兼愛」、「非攻」與「尚賢」的思想學派為？", options: ["儒家", "墨家", "法家", "道家"], ans: 1 },
+      { id: 303, level: 3, category: "英文", q: "Choose the correct relative pronoun: 「The scientist _____ won the Nobel Prize is Taiwanese.」", options: ["which", "who", "whom", "whose"], ans: 1 },
+      { id: 304, level: 3, category: "英文", q: "What is the synonym of the word 「comprehend」?", options: ["understand", "destroy", "hesitate", "postpone"], ans: 0 },
+      { id: 305, level: 3, category: "數學", q: "以 10 為底數的常用對數值 log₁₀(1000) 等於多少？", options: ["1", "2", "3", "10"], ans: 2 },
+      { id: 306, level: 3, category: "數學", q: "平面上直角三角形中，已知銳角 θ = 30°，則 sin(θ) 之值為何？", options: ["1/2", "√3/2", "1", "√2/2"], ans: 0 },
+      { id: 307, level: 3, category: "自然", q: "真核細胞中主要進行有氧呼吸並製造 ATP 能量分子，被稱為細胞發電廠的是？", options: ["葉綠體", "粒線體", "高基氏體", "核糖體"], ans: 1 },
+      { id: 308, level: 3, category: "自然", q: "提出「加速度與所受外力成正比，與物體質量成反比」的物理定律是？", options: ["牛頓第一定律", "牛頓第二運動定律", "萬有引力定律", "庫侖定律"], ans: 1 },
+      { id: 309, level: 3, category: "社會", q: "1914 年引爆第一次世界大戰全面開戰的歷史關鍵導火線事件是？", options: ["塞拉耶佛事件", "滑鐵盧戰役", "珍珠港事變", "波士頓傾茶事件"], ans: 0 },
+      { id: 310, level: 3, category: "社會", q: "現代經濟學之父亞當斯密在《國富論》中提出的「看不見的手」是指？", options: ["政府指令管制", "市場供需與價格機能", "中央銀行貨幣政策", "工會定價協商"], ans: 1 },
+      { id: 311, level: 3, category: "藝術", q: "晚年全聾仍創作出磅礴《第九號交響曲》(合唱) 的古典音樂樂聖為？", options: ["莫札特", "貝多芬", "蕭邦", "柴可夫斯基"], ans: 1 },
+      { id: 312, level: 3, category: "藝術", q: "法國印象派代表畫家莫內（Claude Monet）最著名的系列畫作主題為？", options: ["睡蓮", "星夜", "向日葵", "拾穗"], ans: 0 },
+      { id: 313, level: 3, category: "健康與體育", q: "發生急性運動傷害（如腳踝扭傷）時，急性處理傳統原則「PRICE」中的「I」是指？", options: ["Ice (冰敷)", "Inject (注射)", "Ignore (忽視)", "Intensity (加重)"], ans: 0 },
+      { id: 314, level: 3, category: "健康與體育", q: "人體中主要分泌「胰島素」(Insulin) 以調節並降低血糖濃度的器官是？", options: ["肝臟", "胰臟", "脾臟", "腎臟"], ans: 1 },
+      { id: 315, level: 3, category: "生活百科", q: "依據中華民國現行民法修正規定，完全成年年齡已調整為幾歲？", options: ["16歲", "18歲", "20歲", "22歲"], ans: 1 },
+      { id: 316, level: 3, category: "生活百科", q: "在日常資訊安全防護中，為防止帳號遭盜用，最佳的資安設定策略為？", options: ["所有網站使用相同密碼", "啟用雙重驗證 (2FA/MFA)", "從不登出公用電腦", "密碼設定為生日"], ans: 1 }
+    ];
+
+    // 嚴格精簡為國小、國中、高中三大階段
+    const STAGES = [
+      {
+        level: 1,
+        name: "國民小學",
+        shortName: "國小",
+        mapDesc: "國小校園八大學科巡迴地圖",
+        timePerQ: 10,
+        passingCorrect: 3, // 5 題對 3 題及格
+        promoCorrect: 4    // 升級考 5 題對 4 題晉級
+      },
+      {
+        level: 2,
+        name: "國民中學",
+        shortName: "國中",
+        mapDesc: "國中校園八大學科巡迴地圖",
+        timePerQ: 9.5,
+        passingCorrect: 3,
+        promoCorrect: 4
+      },
+      {
+        level: 3,
+        name: "高級中學",
+        shortName: "高中",
+        mapDesc: "高中校園八大學科巡迴地圖 (榮譽畢業試煉)",
+        timePerQ: 9.0,
+        passingCorrect: 3,
+        promoCorrect: 4
+      }
+    ];
+
+    // 8 大領域標準清單
+    const CORE_CATEGORIES = ["國文", "英文", "數學", "自然", "社會", "藝術", "健康與體育", "生活百科"];
+
+    // 14 格校園地圖模板 (每格皆精準對應 8 大領域與輔助格)
+    const BASE_BOARD_TILES = [
+      { id: 0, title: "校門起點", icon: "🏫", category: "綜合", desc: "巡禮重振，學力加持！", type: "event" },
+      { id: 1, title: "國文講堂", icon: "📖", category: "國文", desc: "詩詞成語・文史考驗", type: "quiz" },
+      { id: 2, title: "英語角落", icon: "🔤", category: "英文", desc: "單字文法・世界之窗", type: "quiz" },
+      { id: 3, title: "數理樓閣", icon: "📐", category: "數學", desc: "邏輯推理・幾何心算", type: "quiz" },
+      { id: 4, title: "校園福利社", icon: "🍱", category: "體能", desc: "買瓶冰冬瓜茶，體力+1！", type: "heal" },
+      { id: 5, title: "自然科學館", icon: "🔬", category: "自然", desc: "萬物生態・理化奧秘", type: "quiz" },
+      { id: 6, title: "社會史地館", icon: "🌍", category: "社會", desc: "歷史風雲・世界地理", type: "quiz" },
+      { id: 7, title: "期中綜合考核", icon: "🚩", category: "綜合", desc: "全領域檢定 (通過算1關)", type: "checkpoint" },
+      { id: 8, title: "美學音樂室", icon: "🎨", category: "藝術", desc: "色彩視藝・音律素養", type: "quiz" },
+      { id: 9, title: "健康體育場", icon: "⚽", category: "健康與體育", desc: "急救生理・運動競賽", type: "quiz" },
+      { id: 10, title: "校園保健室", icon: "💊", category: "體能", desc: "量體溫休息，體力+1！", type: "heal" },
+      { id: 11, title: "生活百科站", icon: "💡", category: "生活百科", desc: "居家安全・常識避難", type: "quiz" },
+      { id: 12, title: "跨領域大會考", icon: "📝", category: "綜合", desc: "八大領域 5 題大挑戰", type: "quiz" },
+      { id: 13, title: "升學衝刺關", icon: "🎓", category: "綜合", desc: "關卡檢測站 (通過算1關)", type: "checkpoint" }
+    ];
+
+    const STORAGE_KEY = 'ROC_QUIZ_3STAGES_8CATS_BANK_V3';
+    let questionBank = [];
+
+    function initQuestionBank() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            questionBank = parsed;
+          } else {
+            questionBank = [...DEFAULT_QUESTION_BANK];
+          }
+        } catch (e) {
+          questionBank = [...DEFAULT_QUESTION_BANK];
+        }
+      } else {
+        questionBank = [...DEFAULT_QUESTION_BANK];
+        saveBank();
+      }
+      updateCountsUI();
+    }
+
+    function saveBank() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(questionBank));
+      updateCountsUI();
+    }
+
+    function updateCountsUI() {
+      const count = questionBank.length;
+      document.getElementById('home-q-count').innerText = count;
+      document.getElementById('modal-q-count').innerText = count;
+    }
+
+    let currentStageIndex = 0;   // 0: 國小, 1: 國中, 2: 高中
+    let stagePassedCount = 0;    // 本階段已過關次數 (滿 3 次可升級考)
+    const REQUIRED_CHECKPOINTS = 3;
+    let playerPos = 0;           // 0 ~ 13
+    let lives = 3;
+    let totalScore = 0;
+    let totalCorrectCount = 0;
+    let totalWrongCount = 0;
+    let isDiceRolling = false;
+
+    // 每次測驗的 5 題狀態
+    let currentQuizQueue = [];
+    let currentQIndex = 0;
+    let currentQuizCorrect = 0;
+    let isPromotionExam = false;
+    let timerInterval = null;
+    let timeLeft = 10;
+    let isAnswering = false;
+
+    // DOM 快取
+    const screenStart = document.getElementById('screen-start');
+    const screenBoard = document.getElementById('screen-board');
+    const screenQuiz = document.getElementById('screen-quiz');
+    const screenResult = document.getElementById('screen-result');
+
+    const boardRankBadge = document.getElementById('board-rank-badge');
+    const checkpointsVisual = document.getElementById('checkpoints-visual');
+    const boardLives = document.getElementById('board-lives');
+    const boardScore = document.getElementById('board-score');
+    const tilesGrid = document.getElementById('tiles-grid');
+    const diceFace = document.getElementById('dice-face');
+    const btnRollDice = document.getElementById('btn-roll-dice');
+    const rollDesc = document.getElementById('roll-desc');
+    const btnPromotionExam = document.getElementById('btn-promotion-exam');
+    const btnPromoText = document.getElementById('btn-promo-text');
+    const boardStatusHint = document.getElementById('board-status-hint');
+    const boardStageTitleHint = document.getElementById('board-stage-title-hint');
+
+    // 測驗畫面 DOM
+    const quizBadgeMode = document.getElementById('quiz-badge-mode');
+    const quizQuestionIndex = document.getElementById('quiz-question-index');
+    const quizLives = document.getElementById('quiz-lives');
+    const quizRoundCorrect = document.getElementById('quiz-round-correct');
+    const timerBar = document.getElementById('timer-bar');
+    const timerText = document.getElementById('timer-text');
+    const qCategory = document.getElementById('q-category');
+    const qNumber = document.getElementById('q-number');
+    const qText = document.getElementById('q-text');
+    const optionBtns = document.querySelectorAll('.option-btn');
+
+    // 首頁學習階段按鈕切換
+    document.querySelectorAll('.stage-select-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const lvl = parseInt(btn.getAttribute('data-level'));
+        currentStageIndex = lvl - 1;
+
+        document.querySelectorAll('.stage-select-btn').forEach(b => {
+          b.className = "stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-slate-700 bg-slate-800/80 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500";
+        });
+
+        btn.className = "stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-yellow-400 bg-amber-500/25 text-yellow-200 font-black text-xs sm:text-sm flex flex-col items-center transition shadow-lg scale-105";
+        sound.coin();
+      });
+    });
+
+    // 構建地圖 14 格介面
+    function buildBoardGrid() {
+      tilesGrid.innerHTML = '';
+      const stage = STAGES[currentStageIndex];
+      boardStageTitleHint.innerText = `🗺️ 【${stage.name}】校園八大學科巡迴地圖`;
+
+      BASE_BOARD_TILES.forEach((tile, idx) => {
+        const div = document.createElement('div');
+        div.id = `tile-${idx}`;
+        div.className = `relative p-2 rounded-xl border border-slate-700 bg-slate-900/90 flex flex-col justify-between transition-all duration-300 min-h-[72px] sm:min-h-[85px] text-center ${idx === playerPos ? 'tile-active ring-2 ring-yellow-400' : ''}`;
+        
+        let typeBadge = '';
+        if (tile.type === 'checkpoint') {
+          typeBadge = '<span class="absolute top-1 right-1 text-[9px] bg-red-600 text-white px-1 rounded font-black">檢定</span>';
+        } else if (tile.type === 'heal') {
+          typeBadge = '<span class="absolute top-1 right-1 text-[9px] bg-emerald-600 text-white px-1 rounded font-black">補體</span>';
+        }
+
+        div.innerHTML = `
+          ${typeBadge}
+          <div class="text-xl sm:text-2xl">${tile.icon}</div>
+          <div class="text-[11px] sm:text-xs font-bold text-slate-100 truncate mt-0.5">${tile.title}</div>
+          <div class="text-[9px] text-amber-300/90 truncate font-semibold">${tile.category}</div>
+          <div id="player-token-${idx}" class="text-xs absolute bottom-1 left-1/2 transform -translate-x-1/2 ${idx === playerPos ? 'block' : 'hidden'}">
+            <span class="animate-bounce inline-block">🎒🏃</span>
+          </div>
+        `;
+        tilesGrid.appendChild(div);
+      });
+    }
+
+    // 更新棋盤面板與印章狀態
+    function updateBoardUI() {
+      const stage = STAGES[currentStageIndex];
+      boardRankBadge.innerText = stage.name;
+      boardScore.innerText = totalScore;
+
+      // 體力愛心
+      let h = '';
+      for (let i = 0; i < 3; i++) {
+        h += (i < lives) ? '❤️' : '💔';
+      }
+      boardLives.innerHTML = h;
+
+      // 3 次關卡驗收指示器
+      let cpVisual = '';
+      for (let i = 0; i < REQUIRED_CHECKPOINTS; i++) {
+        if (i < stagePassedCount) {
+          cpVisual += `<span class="px-2 py-0.5 bg-emerald-600 text-white rounded text-[10px] font-black border border-emerald-300 shadow">第${i+1}關 ✓</span>`;
+        } else {
+          cpVisual += `<span class="px-2 py-0.5 bg-slate-700 text-slate-400 rounded text-[10px] border border-slate-600">第${i+1}關 待考</span>`;
+        }
+      }
+      checkpointsVisual.innerHTML = cpVisual;
+
+      // 判斷是否解鎖升級／畢業測驗
+      const isFinalStage = (currentStageIndex === STAGES.length - 1);
+      if (stagePassedCount >= REQUIRED_CHECKPOINTS) {
+        btnPromotionExam.disabled = false;
+        btnPromotionExam.className = "px-4 sm:px-5 py-2.5 bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 text-slate-950 font-black text-xs sm:text-sm rounded-xl border-2 border-yellow-200 shadow-xl active:translate-y-0.5 transition cursor-pointer blink gold-glow";
+        btnPromoText.innerText = isFinalStage ? `🎓 參加「${stage.name}榮譽畢業大試煉」！` : `🎓 參加「${stage.name}升級檢定考」！`;
+        boardStatusHint.innerHTML = `<span class="text-emerald-400 font-bold">🎉 已滿 3 關！可立即點擊參加升級大測驗！</span>`;
+      } else {
+        btnPromotionExam.disabled = true;
+        btnPromotionExam.className = "px-4 py-2.5 bg-slate-700 text-slate-400 font-black text-xs sm:text-sm rounded-xl border-2 border-slate-600 shadow cursor-not-allowed transition flex items-center gap-1.5";
+        btnPromoText.innerText = isFinalStage ? `高中畢業試煉 (尚差 ${REQUIRED_CHECKPOINTS - stagePassedCount} 關)` : `升級檢定考 (尚差 ${REQUIRED_CHECKPOINTS - stagePassedCount} 關)`;
+      }
+
+      // 移動學生棋子標記
+      BASE_BOARD_TILES.forEach((_, idx) => {
+        const tileEl = document.getElementById(`tile-${idx}`);
+        const tokenEl = document.getElementById(`player-token-${idx}`);
+        if (tileEl && tokenEl) {
+          if (idx === playerPos) {
+            tileEl.classList.add('tile-active', 'ring-2', 'ring-yellow-400');
+            tokenEl.classList.remove('hidden');
+          } else {
+            tileEl.classList.remove('tile-active', 'ring-2', 'ring-yellow-400');
+            tokenEl.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    const DICE_ICONS = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
+    // 擲骰子事件
+    btnRollDice.addEventListener('click', () => {
+      if (isDiceRolling) return;
+      isDiceRolling = true;
+      btnRollDice.disabled = true;
+      rollDesc.innerText = "骰子疾速翻滾中...";
+      sound.diceRoll();
+
+      diceFace.classList.add('dice-rolling');
+
+      let rollTicks = 0;
+      const rollInterval = setInterval(() => {
+        const randNum = Math.floor(Math.random() * 6) + 1;
+        diceFace.innerText = DICE_ICONS[randNum - 1];
+        rollTicks++;
+        if (rollTicks >= 12) {
+          clearInterval(rollInterval);
+          diceFace.classList.remove('dice-rolling');
+          
+          const finalRoll = Math.floor(Math.random() * 6) + 1;
+          diceFace.innerText = DICE_ICONS[finalRoll - 1];
+          rollDesc.innerText = `投出 ${finalRoll} 點！學生前進中...`;
+
+          movePlayerSteps(finalRoll);
+        }
+      }, 45);
+    });
+
+    // 逐步位移
+    function movePlayerSteps(stepsLeft) {
+      if (stepsLeft <= 0) {
+        isDiceRolling = false;
+        btnRollDice.disabled = false;
+        handleTileLanded(playerPos);
+        return;
+      }
+
+      playerPos = (playerPos + 1) % BASE_BOARD_TILES.length;
+      sound.step();
+      updateBoardUI();
+
+      setTimeout(() => {
+        movePlayerSteps(stepsLeft - 1);
+      }, 260);
+    }
+
+    // 停留在格子觸發對應測驗或補給
+    function handleTileLanded(pos) {
+      const tile = BASE_BOARD_TILES[pos];
+      boardStatusHint.innerText = `抵達【${tile.title}】(${tile.category})：${tile.desc}`;
+
+      if (tile.type === 'heal') {
+        sound.heal();
+        if (lives < 3) {
+          lives++;
+          showBoardMessage("❤️ 休息補給，體力愛心 +1！");
+        } else {
+          totalScore += 250;
+          showBoardMessage("✨ 體力已全滿，額外獎勵學力積分 250 分！");
+        }
+        updateBoardUI();
+      } else if (tile.type === 'event') {
+        totalScore += 150;
+        sound.coin();
+        showBoardMessage("🏫 校門巡禮重振精神，學力加持 +150 分！");
+        updateBoardUI();
+      } else {
+        // 進入 5 題學科測驗 (指定該格類科或綜合)
+        setTimeout(() => {
+          startQuizRound(false, tile.category);
+        }, 550);
+      }
+    }
+
+    function showBoardMessage(msg) {
+      boardStatusHint.innerHTML = `<span class="text-yellow-300 font-bold animate-pulse">${msg}</span>`;
+    }
+
+    // 啟動 5 題測驗
+    function startQuizRound(isPromo = false, subjectFilter = null) {
+      isPromotionExam = isPromo;
+      currentQIndex = 0;
+      currentQuizCorrect = 0;
+      isAnswering = false;
+
+      const stage = STAGES[currentStageIndex];
+      // 依當前階段篩選考題 (1: 國小, 2: 國中, 3: 高中)
+      let pool = questionBank.filter(q => q.level === stage.level);
+
+      // 若有指定 8 大學科領域，且題目充足，則優先抽選該科
+      if (subjectFilter && subjectFilter !== "綜合") {
+        const catPool = pool.filter(q => q.category === subjectFilter);
+        if (catPool.length >= 5) {
+          pool = catPool;
+        } else {
+          // 若該科題目少於 5 題，混合該科與其他題目補足
+          const others = pool.filter(q => q.category !== subjectFilter);
+          pool = [...catPool, ...others];
+        }
+      }
+
+      // 若該階段題目不足 5 題，放寬至全題庫
+      if (pool.length < 5) {
+        pool = [...questionBank];
+      }
+
+      // 隨機抽 5 題
+      const shuffled = [...pool].sort(() => 0.5 - Math.random());
+      currentQuizQueue = shuffled.slice(0, 5);
+
+      // 切換至測驗主畫面
+      screenStart.classList.add('hidden');
+      screenBoard.classList.add('hidden');
+      screenResult.classList.add('hidden');
+      screenQuiz.classList.remove('hidden');
+
+      if (isPromotionExam) {
+        const isFinal = (currentStageIndex === STAGES.length - 1);
+        quizBadgeMode.innerText = isFinal ? `🏆 ${stage.name}・全能畢業終極試煉` : `🎓 ${stage.name}・升學資格大檢定`;
+        quizBadgeMode.className = "bg-red-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded border border-yellow-300 gold-glow";
+      } else {
+        const subjectTag = (subjectFilter && subjectFilter !== "綜合") ? `【${subjectFilter}】` : '【綜合大會考】';
+        quizBadgeMode.innerText = `📝 關卡考核 ${subjectTag} (第 ${stagePassedCount + 1}/3 關)`;
+        quizBadgeMode.className = "bg-indigo-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded border border-indigo-300";
+      }
+
+      loadQuestion(0);
+    }
+
+    // 載入考題
+    function loadQuestion(idx) {
+      clearInterval(timerInterval);
+      isAnswering = false;
+      resetOptionButtons();
+
+      currentQIndex = idx;
+      const qData = currentQuizQueue[idx];
+      const stage = STAGES[currentStageIndex];
+
+      quizQuestionIndex.innerText = `${idx + 1} / 5`;
+      quizRoundCorrect.innerText = currentQuizCorrect;
+
+      // 愛心
+      let h = '';
+      for (let i = 0; i < 3; i++) {
+        h += (i < lives) ? '<span>❤️</span>' : '<span class="opacity-30">💔</span>';
+      }
+      quizLives.innerHTML = h;
+
+      qCategory.innerText = `${qData.category}領域`;
+      qNumber.innerText = `考題 #${idx + 1}`;
+      qText.innerText = qData.q;
+
+      optionBtns.forEach((btn, optIdx) => {
+        const txt = btn.querySelector('.option-text');
+        txt.innerText = qData.options[optIdx] || `選項 ${optIdx + 1}`;
+      });
+
+      // 10 秒計時條
+      timeLeft = stage.timePerQ || 10;
+      const initialTime = timeLeft;
+      timerBar.style.width = '100%';
+      timerText.innerText = `${timeLeft.toFixed(1)} 秒`;
+
+      const stepMs = 100;
+      timerInterval = setInterval(() => {
+        timeLeft -= stepMs / 1000;
+        const pct = Math.max(0, (timeLeft / initialTime) * 100);
+        timerBar.style.width = `${pct}%`;
+        timerText.innerText = `${Math.max(0, timeLeft).toFixed(1)} 秒`;
+
+        if (timeLeft <= 3.0 && timeLeft > 0) {
+          sound.tick();
+        }
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          handleAnswer(-1); // 超時算錯
+        }
+      }, stepMs);
+    }
+
+    // 玩家答題判定
+    function handleAnswer(choiceIdx) {
+      if (isAnswering) return;
+      isAnswering = true;
+      clearInterval(timerInterval);
+
+      const qData = currentQuizQueue[currentQIndex];
+      const isCorrect = (choiceIdx === qData.ans);
+
+      optionBtns.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === qData.ans) {
+          btn.classList.add('bg-emerald-600', 'border-emerald-300', 'text-white');
+        } else if (idx === choiceIdx) {
+          btn.classList.add('bg-red-700', 'border-red-400', 'shake');
+        } else {
+          btn.classList.add('opacity-40');
+        }
+      });
+
+      if (isCorrect) {
+        sound.correct();
+        currentQuizCorrect++;
+        totalCorrectCount++;
+        const timeBonus = Math.floor(timeLeft * 80);
+        totalScore += (150 + timeBonus);
+      } else {
+        sound.wrong();
+        lives--;
+        totalWrongCount++;
+        document.getElementById('question-box').classList.add('shake');
+        setTimeout(() => document.getElementById('question-box').classList.remove('shake'), 350);
+      }
+
+      quizRoundCorrect.innerText = currentQuizCorrect;
+
+      setTimeout(() => {
+        if (lives <= 0) {
+          endGame(false);
+          return;
+        }
+
+        if (currentQIndex + 1 < 5) {
+          loadQuestion(currentQIndex + 1);
+        } else {
+          finishQuizRound();
+        }
+      }, 1400);
+    }
+
+    function resetOptionButtons() {
+      optionBtns.forEach(btn => {
+        btn.disabled = false;
+        btn.className = "option-btn bg-slate-800 border-2 border-sky-400 hover:bg-sky-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group";
+      });
+    }
+
+    // 結算 5 題測驗
+    function finishQuizRound() {
+      clearInterval(timerInterval);
+      const stage = STAGES[currentStageIndex];
+
+      if (isPromotionExam) {
+        // 升級或畢業考需達 promoCorrect (4題)
+        if (currentQuizCorrect >= stage.promoCorrect) {
+          sound.fanfare();
+          if (currentStageIndex === STAGES.length - 1) {
+            // 高中畢業，破關！
+            endGame(true);
+          } else {
+            currentStageIndex++;
+            stagePassedCount = 0;
+            showTransitionScreen(
+              `🎉 升學合格！晉升【${STAGES[currentStageIndex].name}】`,
+              `恭喜以 <b>${currentQuizCorrect}/5 題</b> 的佳績通過大檢定！<br>邁入新學階，請在新校園地圖再通過 3 次關卡驗收！`
+            );
+          }
+        } else {
+          sound.wrong();
+          showTransitionScreen(
+            `❌ 升學檢定未達標 (答對 ${currentQuizCorrect}/5 題)`,
+            `大考需至少答對 ${stage.promoCorrect} 題。<br>請回校園地圖繼續磨練，再次挑戰！`
+          );
+        }
+      } else {
+        // 一般關卡考驗需達 passingCorrect (3題)
+        if (currentQuizCorrect >= stage.passingCorrect) {
+          sound.fanfare();
+          if (stagePassedCount < REQUIRED_CHECKPOINTS) {
+            stagePassedCount++;
+          }
+          showTransitionScreen(
+            `✅ 關卡驗收合格！(答對 ${currentQuizCorrect}/5 題)`,
+            `順利完成第 <b>${stagePassedCount} / 3</b> 次關卡考驗！<br>${stagePassedCount >= 3 ? '🔥 已解鎖升級檢定考資格！' : '請繼續投骰探索校園，集滿 3 次關卡！'}`
+          );
+        } else {
+          sound.wrong();
+          showTransitionScreen(
+            `⚠️ 關卡考驗未通過 (答對 ${currentQuizCorrect}/5 題)`,
+            `需至少答對 3 題才算合格。<br>請重新投骰前進挑戰其他科目！`
+          );
+        }
+      }
+    }
+
+    // 過場提示牌
+    function showTransitionScreen(title, htmlMsg) {
+      qCategory.innerText = "【 成果公告 】";
+      qNumber.innerText = "RESULT";
+      qText.innerHTML = `<div class="text-xl font-black text-yellow-300 mb-1">${title}</div><div class="text-sm text-slate-200">${htmlMsg}</div>`;
+
+      setTimeout(() => {
+        screenQuiz.classList.add('hidden');
+        screenBoard.classList.remove('hidden');
+        buildBoardGrid();
+        updateBoardUI();
+      }, 2400);
+    }
+
+    // 點擊「參加升級檢定」
+    btnPromotionExam.addEventListener('click', () => {
+      if (stagePassedCount < REQUIRED_CHECKPOINTS) return;
+      sound.coin();
+      startQuizRound(true, "綜合");
+    });
+
+    // 遊戲結算 (順利畢業 或 留級重修)
+    function endGame(isGraduate) {
+      clearInterval(timerInterval);
+      screenQuiz.classList.add('hidden');
+      screenBoard.classList.add('hidden');
+      screenStart.classList.add('hidden');
+      screenResult.classList.remove('hidden');
+
+      const resIcon = document.getElementById('result-icon');
+      const resTitle = document.getElementById('result-title');
+      const resDesc = document.getElementById('result-desc');
+      const resFinalRank = document.getElementById('res-final-rank');
+      const resFinalScore = document.getElementById('res-final-score');
+      const resCorrectCnt = document.getElementById('res-correct-cnt');
+      const resWrongCnt = document.getElementById('res-wrong-cnt');
+
+      resFinalScore.innerText = totalScore;
+      resCorrectCnt.innerText = totalCorrectCount;
+      resWrongCnt.innerText = totalWrongCount;
+
+      if (isGraduate) {
+        sound.fanfare();
+        resIcon.innerText = "🏆";
+        resTitle.innerText = "榮獲全通關：高中第一名畢業！";
+        resTitle.className = "text-3xl sm:text-5xl font-black text-yellow-300 text-pixel-shadow";
+        resDesc.innerText = "恭喜完成國小、國中至高中的八大學科重重考驗，榮登民國教育委員會最高榮譽榜！";
+        resFinalRank.innerText = "高級中學 (榜首畢業)";
+      } else {
+        resIcon.innerText = "☠️";
+        resTitle.innerText = "體力耗盡！留級重修！";
+        resTitle.className = "text-3xl sm:text-5xl font-black text-red-500 text-pixel-shadow";
+        resDesc.innerText = "愛心扣光未能通過考驗。請重新投入代幣，再度向學歷巔峰邁進！";
+        resFinalRank.innerText = `${STAGES[currentStageIndex].name} (留級修業)`;
+      }
+    }
+
+    const modalBank = document.getElementById('modal-bank');
+    const bankTableBody = document.getElementById('bank-table-body');
+    const fileUploader = document.getElementById('file-uploader');
+    const uploadStatus = document.getElementById('upload-status');
+    const filterLevel = document.getElementById('filter-level');
+    const filterCategory = document.getElementById('filter-category');
+    const uploadTargetCategory = document.getElementById('upload-target-category');
+
+    function renderBankTable() {
+      bankTableBody.innerHTML = '';
+      const fLvl = filterLevel.value;
+      const fCat = filterCategory.value;
+
+      const filtered = questionBank.filter(item => {
+        const matchLvl = (fLvl === 'ALL') || (item.level.toString() === fLvl);
+        const matchCat = (fCat === 'ALL') || (item.category === fCat);
+        return matchLvl && matchCat;
+      });
+
+      filtered.forEach((item) => {
+        const originalIndex = questionBank.findIndex(q => q.id === item.id);
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/80 transition";
+        const stageObj = STAGES.find(s => s.level === item.level) || { shortName: `Lv.${item.level}` };
+        const correctText = item.options[item.ans] || `選項 ${item.ans + 1}`;
+
+        tr.innerHTML = `
+          <td class="p-2 font-bold text-amber-300">${item.category}</td>
+          <td class="p-2 text-slate-400">${stageObj.shortName}</td>
+          <td class="p-2 max-w-xs truncate text-white" title="${item.q}">${item.q}</td>
+          <td class="p-2 text-emerald-400 font-bold truncate max-w-[120px]" title="${correctText}">${correctText}</td>
+          <td class="p-2 text-center">
+            <button class="btn-del-q text-red-400 hover:text-red-300 font-bold px-1" data-idx="${originalIndex}">✕</button>
+          </td>
+        `;
+        bankTableBody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.btn-del-q').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(e.target.getAttribute('data-idx'));
+          questionBank.splice(idx, 1);
+          saveBank();
+          renderBankTable();
+        });
+      });
+    }
+
+    filterLevel.addEventListener('change', renderBankTable);
+    filterCategory.addEventListener('change', renderBankTable);
+
+    // 檔案解析上傳 (支援 JSON 與 CSV，並可指定類科)
+    fileUploader.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const forcedCategory = uploadTargetCategory.value;
+      const reader = new FileReader();
+      const ext = file.name.split('.').pop().toLowerCase();
+
+      reader.onload = function(evt) {
+        const content = evt.target.result;
+        try {
+          let newQ = [];
+          if (ext === 'json') {
+            const parsed = JSON.parse(content);
+            const arr = Array.isArray(parsed) ? parsed : (parsed.questions || []);
+            newQ = arr.map((item, i) => {
+              const cat = (forcedCategory !== 'AUTO') ? forcedCategory : (item.category || "生活百科");
+              const lvl = Math.min(3, Math.max(1, parseInt(item.level) || 1));
+              return {
+                id: item.id || (Date.now() + i),
+                level: lvl,
+                category: cat,
+                q: String(item.q || item.question || "").trim(),
+                options: Array.isArray(item.options) ? item.options.map(String) : ["A", "B", "C", "D"],
+                ans: Math.min(3, Math.max(0, parseInt(item.ans !== undefined ? item.ans : item.answer) || 0))
+              };
+            }).filter(q => q.q && q.options.length >= 2);
+          } else if (ext === 'csv') {
+            const lines = content.split(/\r?\n/).filter(l => l.trim() !== "");
+            const startIdx = lines[0].includes("題目") || lines[0].toLowerCase().includes("question") ? 1 : 0;
+            for (let i = startIdx; i < lines.length; i++) {
+              const cols = lines[i].split(",").map(c => c.trim().replace(/^"|"$/g, ''));
+              if (cols.length >= 7) {
+                const cat = (forcedCategory !== 'AUTO') ? forcedCategory : (cols[0] || "生活百科");
+                const lvl = Math.min(3, Math.max(1, parseInt(cols[1]) || 1));
+                newQ.push({
+                  id: Date.now() + i,
+                  category: cat,
+                  level: lvl,
+                  q: cols[2],
+                  options: [cols[3], cols[4], cols[5], cols[6]],
+                  ans: Math.min(3, Math.max(0, parseInt(cols[7]) || 0))
+                });
+              }
+            }
+          }
+
+          if (newQ.length === 0) throw new Error("未能從檔案中解析出有效題目！請檢查格式。");
+
+          questionBank = [...questionBank, ...newQ];
+          saveBank();
+          renderBankTable();
+          uploadStatus.innerText = `✅ 成功匯入 ${newQ.length} 題！目前題庫共計 ${questionBank.length} 題。`;
+          uploadStatus.className = "font-bold mt-2 text-emerald-400";
+          uploadStatus.classList.remove('hidden');
+        } catch (err) {
+          uploadStatus.innerText = `❌ 匯入失敗：${err.message}`;
+          uploadStatus.className = "font-bold mt-2 text-red-400";
+          uploadStatus.classList.remove('hidden');
+        }
+        fileUploader.value = '';
+      };
+      reader.readAsText(file);
+    });
+
+    // 手動表單新增單題
+    document.getElementById('form-add-q').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newObj = {
+        id: Date.now(),
+        category: document.getElementById('new-q-cat').value,
+        level: parseInt(document.getElementById('new-q-level').value),
+        q: document.getElementById('new-q-text').value.trim(),
+        options: [
+          document.getElementById('new-opt-0').value.trim(),
+          document.getElementById('new-opt-1').value.trim(),
+          document.getElementById('new-opt-2').value.trim(),
+          document.getElementById('new-opt-3').value.trim()
+        ],
+        ans: parseInt(document.getElementById('new-q-correct').value)
+      };
+      questionBank.unshift(newObj);
+      saveBank();
+      renderBankTable();
+      e.target.reset();
+      uploadStatus.innerText = "✅ 手動單題已成功儲存！";
+      uploadStatus.className = "font-bold mt-2 text-emerald-400";
+      uploadStatus.classList.remove('hidden');
+    });
+
+    // 匯出 JSON
+    document.getElementById('btn-export-json').addEventListener('click', () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questionBank, null, 2));
+      downloadFile(dataStr, `民國教育委員會_八大學科題庫_${new Date().toISOString().slice(0,10)}.json`);
+    });
+
+    // 還原預設題庫
+    document.getElementById('btn-reset-default').addEventListener('click', () => {
+      questionBank = [...DEFAULT_QUESTION_BANK];
+      saveBank();
+      renderBankTable();
+      uploadStatus.innerText = "已恢復為預設八大領域題庫！";
+      uploadStatus.className = "font-bold mt-2 text-amber-400";
+      uploadStatus.classList.remove('hidden');
+    });
+
+    // 下載範本 (JSON 與 CSV，涵蓋八科格式)
+    document.getElementById('btn-download-template-json').addEventListener('click', () => {
+      const sample = [
+        {
+          "category": "國文",
+          "level": 1,
+          "q": "題目內容示範：成語三顧茅廬是指誰？",
+          "options": ["關羽", "諸葛亮", "曹操", "孫權"],
+          "ans": 1
+        },
+        {
+          "category": "英文",
+          "level": 2,
+          "q": "題目內容示範：Apple 的中文意思？",
+          "options": ["香蕉", "蘋果", "西瓜", "柳橙"],
+          "ans": 1
+        }
+      ];
+      downloadFile("data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sample, null, 2)), "八大領域題庫範本.json");
+    });
+
+    document.getElementById('btn-download-template-csv').addEventListener('click', () => {
+      const csv = "\ufeff領域,階段(1國小/2國中/3高中),題目內容,選項1,選項2,選項3,選項4,正確答案索引(0-3)\n國文,1,成語三顧茅廬是指拜訪誰？,關羽,諸葛亮,曹操,孫權,1\n英文,2,Apple 的中文意思？,香蕉,蘋果,西瓜,柳橙,1\n數學,1,正方形有幾個角？,3個,4個,5個,6個,1\n";
+      downloadFile("data:text/csv;charset=utf-8," + encodeURIComponent(csv), "八大領域題庫範本.csv");
+    });
+
+    function downloadFile(uri, filename) {
+      const a = document.createElement('a');
+      a.href = uri;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function startGame() {
+      sound.coin();
+      stagePassedCount = 0;
+      playerPos = 0;
+      lives = 3;
+      totalScore = 0;
+      totalCorrectCount = 0;
+      totalWrongCount = 0;
+
+      screenStart.classList.add('hidden');
+      screenResult.classList.add('hidden');
+      screenQuiz.classList.add('hidden');
+      screenBoard.classList.remove('hidden');
+
+      buildBoardGrid();
+      updateBoardUI();
+    }
+
+    // 選項按鈕點擊
+    optionBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const choice = parseInt(btn.getAttribute('data-choice'));
+        handleAnswer(choice);
+      });
+    });
+
+    // 鍵盤操控 (1~4 / A~D 答題，空白鍵投骰)
+    window.addEventListener('keydown', (e) => {
+      if (!modalBank.classList.contains('hidden')) return;
+
+      // 答題時
+      if (!screenQuiz.classList.contains('hidden')) {
+        const k = e.key.toLowerCase();
+        if (k === '1' || k === 'a') handleAnswer(0);
+        else if (k === '2' || k === 'b') handleAnswer(1);
+        else if (k === '3' || k === 'c') handleAnswer(2);
+        else if (k === '4' || k === 'd') handleAnswer(3);
+        return;
+      }
+
+      // 地圖投骰
+      if (!screenBoard.classList.contains('hidden')) {
+        if (e.code === 'Space' || e.code === 'Enter') {
+          if (!btnRollDice.disabled) btnRollDice.click();
+        }
+        return;
+      }
+
+      // 首頁開始
+      if (!screenStart.classList.contains('hidden')) {
+        if (e.code === 'Space' || e.code === 'Enter') startGame();
+      }
+    });
+
+    document.getElementById('btn-start-game').addEventListener('click', startGame);
+    document.getElementById('btn-restart').addEventListener('click', startGame);
+    document.getElementById('btn-back-home').addEventListener('click', () => {
+      screenResult.classList.add('hidden');
+      screenQuiz.classList.add('hidden');
+      screenBoard.classList.add('hidden');
+      screenStart.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-sound-toggle').addEventListener('click', () => {
+      sound.enabled = !sound.enabled;
+      document.getElementById('sound-icon').innerText = sound.enabled ? '🔊' : '🔇';
+      document.getElementById('sound-status').innerText = sound.enabled ? '音效開' : '音效關';
+    });
+
+    // 題庫彈窗控制
+    const openBank = () => {
+      renderBankTable();
+      modalBank.classList.remove('hidden');
+    };
+    document.getElementById('btn-open-bank').addEventListener('click', openBank);
+    document.getElementById('btn-close-bank').addEventListener('click', () => modalBank.classList.add('hidden'));
+    document.getElementById('btn-modal-done').addEventListener('click', () => modalBank.classList.add('hidden'));
+    document.getElementById('btn-choose-file').addEventListener('click', () => fileUploader.click());
+
+    // 啟動初始化
+    initQuestionBank();
+    buildBoardGrid();
+  </script>
+</body>
+</html>
