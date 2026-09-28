@@ -3,375 +3,864 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>民國教育委員會 - 三學階八大領域經典復刻版</title>
+  <title>民國教育委員會 - 1993經典街機復刻・日本Q版漫畫版</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: 懷舊像素風格字型 -->
+  <!-- Google Fonts: 日本漫畫與街機懷舊字型 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Mochiy+Pop+One&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'DotGothic16', 'Noto Sans TC', sans-serif;
-      background-color: #080a10;
-      user-select: none;
+    :root {
+      --manga-black: #18181b;
+      --manga-yellow: #facc15;
+      --manga-red: #ef4444;
+      --manga-blue: #38bdf8;
+      --manga-green: #22c55e;
+      --board-green: #14532d;
     }
-    /* 街機 CRT 掃描線光影濾鏡 */
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 60%, #030712 100%);
+      user-select: none;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .font-comic {
+      font-family: 'Mochiy Pop One', 'DotGothic16', 'Noto Sans TC', sans-serif;
+    }
+    .font-pixel {
+      font-family: 'DotGothic16', monospace;
+    }
+
+    /* 日本漫畫網點背景效果 */
+    .manga-halftone {
+      background-image: radial-gradient(#ffffff 18%, transparent 19%);
+      background-size: 10px 10px;
+    }
+
+    .manga-dots-dark {
+      background-image: radial-gradient(rgba(0, 0, 0, 0.18) 20%, transparent 21%);
+      background-size: 8px 8px;
+    }
+
+    /* 速度線/集中線背景 (漫畫特效) */
+    .manga-speed-lines {
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0.08) 0deg 3deg,
+        transparent 3deg 8deg
+      );
+    }
+
+    /* 街機 CRT 光影濾鏡 */
     .crt::after {
       content: " ";
       display: block;
       position: absolute;
       top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.32) 50%);
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%);
       background-size: 100% 4px;
       z-index: 40;
       pointer-events: none;
     }
-    .arcade-border {
-      border: 5px solid #fbbf24;
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.35), inset 0 0 18px rgba(0, 0, 0, 0.9);
+
+    /* 街機框體立體感外框 */
+    .arcade-cabinet {
+      border: 6px solid #f59e0b;
+      box-shadow: 
+        0 0 0 4px #78350f,
+        0 0 35px rgba(245, 158, 11, 0.45),
+        inset 0 0 25px rgba(0, 0, 0, 0.85);
     }
-    .text-pixel-shadow {
-      text-shadow: 2px 2px 0px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+
+    .manga-border-thick {
+      border: 4px solid #1e293b;
+      box-shadow: 4px 4px 0px #0f172a;
     }
-    .gold-glow {
-      box-shadow: 0 0 18px rgba(251, 191, 36, 0.7);
+    .manga-border-red {
+      border: 4px solid #ef4444;
+      box-shadow: 4px 4px 0px #7f1d1d;
     }
-    .option-btn {
-      transition: all 0.12s ease;
-      box-shadow: 0 5px 0px #1e293b, 0 8px 12px rgba(0,0,0,0.5);
+    .manga-border-yellow {
+      border: 4px solid #fbbf24;
+      box-shadow: 4px 4px 0px #92400e;
     }
-    .option-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 7px 0px #1e293b, 0 10px 16px rgba(0,0,0,0.6);
+
+    /* 漫畫日系文字立體陰影 */
+    .text-manga-shadow {
+      text-shadow: 
+        3px 3px 0 #000, 
+        -2px -2px 0 #000, 
+        2px -2px 0 #000, 
+        -2px 2px 0 #000,
+        0px 4px 8px rgba(0,0,0,0.8);
     }
-    .option-btn:active:not(:disabled) {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0px #1e293b;
+
+    .text-pop-white {
+      text-shadow: 2px 2px 0 #1e293b, -1px -1px 0 #1e293b, 1px -1px 0 #1e293b, -1px 1px 0 #1e293b;
     }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.25; }
+
+    /* 日本漫畫對話框氣泡 */
+    .speech-bubble {
+      position: relative;
+      background: #ffffff;
+      border: 3px solid #1e293b;
+      border-radius: 18px;
+      box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.35);
+      color: #0f172a;
     }
-    .blink {
-      animation: blink 0.85s infinite;
+    .speech-bubble-bottom::after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 28px;
+      border-width: 14px 12px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
     }
-    @keyframes shake {
+    .speech-bubble-bottom::before {
+      content: '';
+      position: absolute;
+      bottom: -18px;
+      left: 26px;
+      border-width: 17px 14px 0;
+      border-style: solid;
+      border-color: #1e293b transparent;
+      display: block;
+      width: 0;
+    }
+
+    .speech-bubble-left::after {
+      content: '';
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 10px 14px 10px 0;
+      border-style: solid;
+      border-color: transparent #ffffff;
+      display: block;
+      width: 0;
+    }
+    .speech-bubble-left::before {
+      content: '';
+      position: absolute;
+      left: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 12px 17px 12px 0;
+      border-style: solid;
+      border-color: transparent #1e293b;
+      display: block;
+      width: 0;
+    }
+
+    /* 街機 4 色大圓鍵按鈕效果 */
+    .arcade-btn-a {
+      background: linear-gradient(180deg, #f87171 0%, #ef4444 60%, #b91c1c 100%);
+      box-shadow: 0 6px 0 #991b1b, 0 10px 15px rgba(0,0,0,0.5);
+    }
+    .arcade-btn-b {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 60%, #0369a1 100%);
+      box-shadow: 0 6px 0 #075985, 0 10px 15px rgba(0,0,0,0.5);
+    }
+    .arcade-btn-c {
+      background: linear-gradient(180deg, #fbbf24 0%, #d97706 60%, #b45309 100%);
+      box-shadow: 0 6px 0 #92400e, 0 10px 15px rgba(0,0,0,0.5);
+    }
+    .arcade-btn-d {
+      background: linear-gradient(180deg, #4ade80 0%, #16a34a 60%, #15803d 100%);
+      box-shadow: 0 6px 0 #166534, 0 10px 15px rgba(0,0,0,0.5);
+    }
+    .arcade-btn-choice {
+      transition: all 0.1s ease;
+      cursor: pointer;
+    }
+    .arcade-btn-choice:hover:not(:disabled) {
+      transform: translateY(-3px);
+      filter: brightness(1.1);
+    }
+    .arcade-btn-choice:active:not(:disabled) {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.6) !important;
+    }
+
+    /* 巨大正解花丸櫻花印章與叉叉印章 */
+    .hanamaru-stamp {
+      animation: stampDrop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes stampDrop {
+      0% { transform: scale(3.5) rotate(-35deg); opacity: 0; }
+      100% { transform: scale(1) rotate(-8deg); opacity: 1; }
+    }
+
+    .wrong-stamp {
+      animation: wrongStampDrop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes wrongStampDrop {
+      0% { transform: scale(3.5) rotate(30deg); opacity: 0; }
+      100% { transform: scale(1) rotate(6deg); opacity: 1; }
+    }
+
+    /* 角色震動與動畫 */
+    @keyframes characterBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+    .char-bounce {
+      animation: characterBounce 0.7s infinite ease-in-out;
+    }
+
+    @keyframes headShake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
+      20% { transform: translateX(-10px) rotate(-4deg); }
+      40% { transform: translateX(10px) rotate(4deg); }
+      60% { transform: translateX(-8px) rotate(-2deg); }
+      80% { transform: translateX(8px) rotate(2deg); }
     }
-    .shake {
-      animation: shake 0.35s ease-in-out;
+    .head-shake {
+      animation: headShake 0.4s ease-in-out;
     }
-    /* 骰子旋轉動畫 */
-    .dice-container {
-      perspective: 600px;
+
+    @keyframes sweatDrop {
+      0% { opacity: 0; transform: translateY(-5px); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(12px); }
     }
-    .dice-box {
+    .sweat-drop {
+      animation: sweatDrop 0.8s infinite ease-in;
+    }
+
+    /* 骰子3D立體翻轉動畫 */
+    .dice-cube {
       transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2);
     }
-    .dice-rolling {
-      animation: diceRollAnim 0.5s infinite ease-in-out;
+    .dice-rolling-3d {
+      animation: diceRoll3D 0.45s infinite ease-in-out;
     }
-    @keyframes diceRollAnim {
-      0% { transform: rotate(0deg) scale(0.9); }
-      25% { transform: rotate(90deg) scale(1.1); }
-      50% { transform: rotate(180deg) scale(0.9); }
-      75% { transform: rotate(270deg) scale(1.1); }
+    @keyframes diceRoll3D {
+      0% { transform: rotate(0deg) scale(0.92); }
+      25% { transform: rotate(90deg) scale(1.15); }
+      50% { transform: rotate(180deg) scale(0.92); }
+      75% { transform: rotate(270deg) scale(1.15); }
       100% { transform: rotate(360deg) scale(1.0); }
     }
-    /* 棋盤格子懸浮與焦點樣式 */
-    .tile-active {
+
+    /* 格子高光聚焦 */
+    .tile-board-cell {
+      transition: all 0.2s ease;
+    }
+    .tile-board-cell.tile-current {
       border-color: #facc15 !important;
-      background: linear-gradient(135deg, rgba(234, 179, 8, 0.35), rgba(245, 158, 11, 0.25)) !important;
-      transform: scale(1.04);
+      background: linear-gradient(145deg, #fef08a 0%, #fde047 100%) !important;
+      color: #0f172a !important;
+      transform: scale(1.06);
+      box-shadow: 0 0 20px #facc15, 0 8px 12px rgba(0,0,0,0.5);
       z-index: 25;
+    }
+    .tile-board-cell.tile-current .tile-sub-text {
+      color: #713f12 !important;
+    }
+
+    /* 櫻花飄落粒子效果 (畢業慶賀) */
+    @keyframes petalFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
+    }
+    .petal {
+      position: absolute;
+      background: #f472b6;
+      border-radius: 15px 0 15px 0;
+      pointer-events: none;
+      animation: petalFall linear forwards;
+    }
+
+    /* 黑板粉筆字紋理 */
+    .blackboard-bg {
+      background-color: #14532d;
+      background-image: 
+        radial-gradient(rgba(255,255,255,0.06) 1px, transparent 0),
+        linear-gradient(135deg, rgba(255,255,255,0.04) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.04) 75%, transparent 75%, transparent);
+      background-size: 20px 20px, 40px 40px;
+    }
+
+    /* 自訂捲軸樣式 */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f59e0b;
+      border-radius: 4px;
     }
   </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col items-center justify-center p-2 sm:p-4">
+<body class="flex flex-col items-center justify-center p-1 sm:p-4 text-slate-100">
 
-  <!-- 街機主外框容器 -->
-  <div class="relative w-full max-w-5xl bg-slate-900 rounded-2xl arcade-border crt overflow-hidden flex flex-col shadow-2xl">
+  <!-- ======================================================== -->
+  <!-- 街機主外框容器 (Arcade Machine Frame) -->
+  <!-- ======================================================== -->
+  <div class="relative w-full max-w-5xl bg-slate-900 rounded-3xl arcade-cabinet crt overflow-hidden flex flex-col shadow-2xl my-auto">
     
-    <!-- 頂部大型機台霓虹標題列 -->
-    <header class="bg-gradient-to-r from-red-800 via-amber-600 to-red-800 py-2.5 px-4 sm:px-6 flex items-center justify-between border-b-4 border-yellow-500 z-50">
+    <!-- 頂部機台看板霓虹標題列 (Marquee Top Bar) -->
+    <header class="bg-gradient-to-r from-red-700 via-amber-500 to-red-700 p-2 sm:p-3 flex items-center justify-between border-b-4 border-yellow-300 z-50 shadow-lg">
       <div class="flex items-center gap-2 sm:gap-3">
-        <span class="inline-block w-3.5 h-3.5 rounded-full bg-red-400 animate-ping"></span>
-        <h1 class="text-base sm:text-2xl font-black tracking-widest text-yellow-200 text-pixel-shadow flex items-center gap-1.5">
-          ★ 民國教育委員會 ★
-        </h1>
-        <span class="hidden md:inline-block text-[11px] bg-yellow-400 text-slate-950 font-black px-2 py-0.5 rounded shadow">
-          國小・國中・高中 八大學科雙六巡迴版
-        </span>
+        <!-- 機台閃爍訊號燈 -->
+        <span class="inline-block w-4 h-4 rounded-full bg-yellow-300 animate-ping shadow-[0_0_12px_#fde047]"></span>
+        <div>
+          <h1 class="text-base sm:text-2xl font-black tracking-wider text-yellow-200 text-manga-shadow font-comic flex items-center gap-2">
+            ★ 民國教育委員會 ★
+            <span class="text-xs bg-red-600 text-yellow-200 px-2 py-0.5 rounded-full border border-yellow-300 shadow font-pixel hidden sm:inline-block">
+              1993 街機傳奇復刻
+            </span>
+          </h1>
+          <div class="text-[10px] text-yellow-100 font-bold tracking-widest hidden md:block opacity-90">
+            NAKANIHON - LAXAN CLASSIC TAIWAN EDITION・日系Q版漫畫雙六大冒險
+          </div>
+        </div>
       </div>
-      <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-bold text-yellow-100">
-        <button id="btn-sound-toggle" class="hover:text-white transition flex items-center gap-1 bg-black/40 px-2.5 py-1.5 rounded-lg border border-yellow-500/50">
-          <span id="sound-icon">🔊</span> <span id="sound-status">音效開</span>
+
+      <!-- 街機投幣孔、音效切換與題庫按鈕 -->
+      <div class="flex items-center gap-1.5 sm:gap-3 text-xs font-black">
+        <!-- 投幣資訊徽章 (可點擊直接投幣) -->
+        <button id="btn-insert-coin" title="點擊投幣或按鍵盤 [C] 鍵" class="bg-amber-400 hover:bg-amber-300 text-slate-950 px-2.5 py-1.5 rounded-lg border-2 border-yellow-100 shadow flex items-center gap-1 active:translate-y-0.5 transition font-comic">
+          <span class="text-sm">🪙</span>
+          <span>投幣</span>
+          <span id="credit-badge" class="bg-red-600 text-white text-[10px] px-1.5 py-0.2 rounded font-pixel">CREDIT: 01</span>
         </button>
-        <button id="btn-open-bank" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg border-2 border-blue-300 shadow active:translate-y-0.5 transition flex items-center gap-1">
-          <span>📂</span> <span>各類科題庫管理</span>
+
+        <!-- BGM 開關 -->
+        <button id="btn-bgm-toggle" class="bg-slate-800/80 hover:bg-slate-700 text-yellow-300 px-2 py-1.5 rounded-lg border border-yellow-500/50 flex items-center gap-1 transition">
+          <span id="bgm-icon">🎵</span> <span class="hidden sm:inline" id="bgm-text">BGM開</span>
+        </button>
+
+        <!-- 音效開關 -->
+        <button id="btn-sound-toggle" class="bg-slate-800/80 hover:bg-slate-700 text-yellow-300 px-2 py-1.5 rounded-lg border border-yellow-500/50 flex items-center gap-1 transition">
+          <span id="sound-icon">🔊</span> <span class="hidden sm:inline" id="sound-text">音效</span>
+        </button>
+
+        <!-- 題庫管理 -->
+        <button id="btn-open-bank" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-2.5 py-1.5 rounded-lg border-2 border-indigo-300 shadow active:translate-y-0.5 transition flex items-center gap-1">
+          <span>📂</span> <span class="hidden sm:inline">題庫管理</span>
         </button>
       </div>
     </header>
 
-    <!-- 遊戲主舞台區域 -->
-    <main id="game-stage" class="relative p-3 sm:p-5 min-h-[570px] flex flex-col justify-between z-30">
+    <!-- ======================================================== -->
+    <!-- 遊戲主舞台區域 (Game Main Stages) -->
+    <!-- ======================================================== -->
+    <main id="game-stage" class="relative p-2 sm:p-5 min-h-[580px] flex flex-col justify-between z-30 overflow-hidden">
       
-      <!-- [畫面 1: 首頁 / 入學與學習階段選擇] -->
-      <section id="screen-start" class="flex flex-col items-center justify-center my-auto text-center gap-4 py-4">
-        <div class="space-y-1.5">
-          <div class="text-4xl sm:text-6xl font-black text-amber-300 text-pixel-shadow tracking-wider">
+      <!-- ======================================================== -->
+      <!-- [畫面 1: 首頁 / 角色挑選 / 模式與學階設定] -->
+      <!-- ======================================================== -->
+      <section id="screen-start" class="flex flex-col items-center justify-between my-auto text-center gap-3 py-2">
+        <!-- 巨幅漫畫感標題與日系狀聲詞 -->
+        <div class="relative py-1">
+          <div class="inline-block px-4 py-1 bg-yellow-400 text-slate-950 font-black text-xs sm:text-sm rounded-full border-2 border-slate-900 shadow-md font-comic -rotate-2 mb-1">
+            📢 綜藝益智節目大型機台正宗復刻
+          </div>
+          <div class="text-4xl sm:text-6xl font-black text-amber-300 text-manga-shadow tracking-widest font-comic transform hover:scale-105 transition duration-300">
             民國教育委員會
           </div>
-          <p class="text-xs sm:text-sm text-yellow-100/90 font-bold tracking-wide">
-            1990s 經典大型電玩復刻・大富翁擲骰走格・八大領域學力全考驗
-          </p>
+          <div class="flex items-center justify-center gap-2 mt-1">
+            <span class="text-xs bg-red-600 text-white font-black px-2 py-0.5 rounded shadow">クイズ平成なんでも委員会</span>
+            <span class="text-xs text-yellow-200 font-bold">1993 NAKANIHON / LAXAN TAIWAN SPECIAL</span>
+          </div>
         </div>
 
-        <!-- 選擇初始就讀階段 -->
-        <div class="bg-slate-800/90 border-2 border-yellow-500/80 rounded-xl p-3 sm:p-4 w-full max-w-xl text-left shadow-lg">
-          <div class="text-xs sm:text-sm font-bold text-yellow-300 mb-2 flex items-center justify-between border-b border-slate-700 pb-1.5">
-            <span>🎯 請選擇您的挑戰就讀階段：</span>
-            <span class="text-[11px] text-slate-400">各階段學科深度皆不同</span>
+        <!-- 角色挑選區 (3位極富表情的Q版學生角色) -->
+        <div class="w-full max-w-2xl bg-slate-800/90 border-4 border-yellow-400 rounded-2xl p-3 sm:p-4 shadow-xl">
+          <div class="flex items-center justify-between border-b-2 border-slate-700 pb-2 mb-3">
+            <span class="text-xs sm:text-sm font-black text-yellow-300 flex items-center gap-1 font-comic">
+              <span>👤</span> 步驟 1：請選擇你的參賽 Q 版學生主角
+            </span>
+            <span class="text-[11px] text-slate-300">各角色有專屬搞笑漫畫表情</span>
           </div>
+
+          <div class="grid grid-cols-3 gap-2.5 sm:gap-4" id="char-picker-container">
+            <!-- 角色 1: 小明 (熱血男學生) -->
+            <button class="char-card p-2 sm:p-3 rounded-xl border-4 border-yellow-400 bg-amber-500/20 text-yellow-200 flex flex-col items-center transition shadow-lg relative group cursor-pointer" data-char="xiaoming">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center char-bounce" id="avatar-preview-xiaoming">
+                <!-- SVG 小明 -->
+                <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+                  <circle cx="50" cy="50" r="38" fill="#fed7aa" stroke="#1e293b" stroke-width="4"/>
+                  <!-- 學生學帽 -->
+                  <path d="M15 42 Q50 18 85 42 L80 34 Q50 12 20 34 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="3"/>
+                  <path d="M10 44 Q50 38 90 44 L86 48 Q50 42 14 48 Z" fill="#3b82f6" stroke="#0f172a" stroke-width="2"/>
+                  <!-- 徽章 -->
+                  <circle cx="50" cy="32" r="5" fill="#facc15" stroke="#713f12" stroke-width="2"/>
+                  <!-- 呆毛與劉海 -->
+                  <path d="M30 42 Q40 50 50 42 Q60 50 70 42" stroke="#1e293b" stroke-width="4" fill="none"/>
+                  <!-- 眼睛 (熱血大眼) -->
+                  <ellipse cx="36" cy="54" rx="5" ry="7" fill="#0f172a"/>
+                  <circle cx="38" cy="52" r="2.5" fill="#ffffff"/>
+                  <ellipse cx="64" cy="54" rx="5" ry="7" fill="#0f172a"/>
+                  <circle cx="66" cy="52" r="2.5" fill="#ffffff"/>
+                  <!-- 腮紅 -->
+                  <ellipse cx="28" cy="62" rx="4" ry="2.5" fill="#f87171" opacity="0.8"/>
+                  <ellipse cx="72" cy="62" rx="4" ry="2.5" fill="#f87171" opacity="0.8"/>
+                  <!-- 嘴巴 (熱血自信笑) -->
+                  <path d="M42 66 Q50 74 58 66" stroke="#0f172a" stroke-width="3.5" fill="#ef4444" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="font-black text-xs sm:text-sm font-comic mt-1 text-white">阿強 / 小明</span>
+              <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.5 rounded-full mt-1 font-bold">熱血男子漢</span>
+            </button>
+
+            <!-- 角色 2: 小櫻 (元氣高校少女) -->
+            <button class="char-card p-2 sm:p-3 rounded-xl border-4 border-slate-700 bg-slate-800/80 text-slate-300 flex flex-col items-center transition hover:border-slate-500 cursor-pointer" data-char="xiaoying">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center" id="avatar-preview-xiaoying">
+                <!-- SVG 小櫻 -->
+                <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+                  <!-- 雙馬尾 -->
+                  <path d="M16 38 C6 20 2 60 18 64 C22 55 22 45 24 38 Z" fill="#9a3412" stroke="#1e293b" stroke-width="3"/>
+                  <path d="M84 38 C94 20 98 60 82 64 C78 55 78 45 76 38 Z" fill="#9a3412" stroke="#1e293b" stroke-width="3"/>
+                  <!-- 臉蛋 -->
+                  <circle cx="50" cy="50" r="36" fill="#fde68a" stroke="#1e293b" stroke-width="4"/>
+                  <!-- 蝴蝶結與劉海 -->
+                  <path d="M26 38 Q50 48 74 38" fill="#b45309" stroke="#1e293b" stroke-width="3"/>
+                  <path d="M30 42 Q50 25 70 42 Q50 36 30 42 Z" fill="#b45309"/>
+                  <!-- 水汪汪大眼 -->
+                  <ellipse cx="37" cy="53" rx="6" ry="8" fill="#0f172a"/>
+                  <circle cx="39" cy="50" r="3" fill="#ffffff"/>
+                  <circle cx="35" cy="56" r="1.5" fill="#ffffff"/>
+                  <ellipse cx="63" cy="53" rx="6" ry="8" fill="#0f172a"/>
+                  <circle cx="65" cy="50" r="3" fill="#ffffff"/>
+                  <circle cx="61" cy="56" r="1.5" fill="#ffffff"/>
+                  <!-- 腮紅 -->
+                  <ellipse cx="28" cy="62" rx="5" ry="3" fill="#fb7185" opacity="0.9"/>
+                  <ellipse cx="72" cy="62" rx="5" ry="3" fill="#fb7185" opacity="0.9"/>
+                  <!-- 嘴巴 (笑眼元氣) -->
+                  <path d="M43 65 Q50 72 57 65" stroke="#0f172a" stroke-width="3" fill="#f43f5e" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="font-black text-xs sm:text-sm font-comic mt-1 text-white">小櫻 / 芸芸</span>
+              <span class="text-[10px] bg-pink-600 text-white px-1.5 py-0.5 rounded-full mt-1 font-bold">元氣美少女</span>
+            </button>
+
+            <!-- 角色 3: 小博 (天才眼鏡少年) -->
+            <button class="char-card p-2 sm:p-3 rounded-xl border-4 border-slate-700 bg-slate-800/80 text-slate-300 flex flex-col items-center transition hover:border-slate-500 cursor-pointer" data-char="xiaobo">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center" id="avatar-preview-xiaobo">
+                <!-- SVG 小博 -->
+                <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+                  <circle cx="50" cy="50" r="36" fill="#fed7aa" stroke="#1e293b" stroke-width="4"/>
+                  <!-- 黑色整齊西裝頭劉海 -->
+                  <path d="M20 40 Q50 20 80 40 L80 32 Q50 15 20 32 Z" fill="#334155" stroke="#1e293b" stroke-width="3"/>
+                  <!-- 大黑框眼鏡 -->
+                  <circle cx="37" cy="52" r="11" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+                  <circle cx="63" cy="52" r="11" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+                  <line x1="48" y1="52" x2="52" y2="52" stroke="#0f172a" stroke-width="4"/>
+                  <!-- 眼鏡反光 -->
+                  <path d="M30 46 L40 56" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M56 46 L66 56" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- 自信小嘴 -->
+                  <path d="M44 68 Q50 71 56 68" stroke="#0f172a" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="font-black text-xs sm:text-sm font-comic mt-1 text-white">小博 / 阿儒</span>
+              <span class="text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded-full mt-1 font-bold">天才小學霸</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 模式與就讀學階選擇 -->
+        <div class="w-full max-w-2xl bg-slate-800/90 border-2 border-yellow-500/80 rounded-2xl p-3 sm:p-4 text-left shadow-lg space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-700 pb-1.5">
+            <span class="text-xs sm:text-sm font-black text-yellow-300 font-comic">
+              🎯 步驟 2：請選擇入學學階與考核目標
+            </span>
+            <span class="text-[11px] text-emerald-400 font-bold font-pixel">
+              題庫已載入 <b id="home-q-count">0</b> 題
+            </span>
+          </div>
+
           <div class="grid grid-cols-3 gap-2.5" id="stage-picker-container">
-            <button class="stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-yellow-400 bg-amber-500/20 text-yellow-200 font-black text-xs sm:text-sm flex flex-col items-center transition" data-level="1">
-              <span class="text-lg sm:text-xl">🎒</span>
-              <span>國民小學</span>
-              <span class="text-[10px] text-amber-300/80 mt-0.5 font-normal">基礎八大領域</span>
+            <button class="stage-select-btn p-2 rounded-xl border-2 border-yellow-400 bg-amber-500/25 text-yellow-200 font-black text-xs sm:text-sm flex flex-col items-center transition shadow scale-105" data-level="1">
+              <span class="text-xl">🎒</span>
+              <span class="font-comic">國民小學</span>
+              <span class="text-[10px] text-amber-200/80 font-normal">基礎常識八大領域</span>
             </button>
-            <button class="stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-slate-700 bg-slate-800/80 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500" data-level="2">
-              <span class="text-lg sm:text-xl">🏫</span>
-              <span>國民中學</span>
-              <span class="text-[10px] text-slate-400 mt-0.5 font-normal">進階觀念測驗</span>
+            <button class="stage-select-btn p-2 rounded-xl border-2 border-slate-700 bg-slate-800 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500" data-level="2">
+              <span class="text-xl">🏫</span>
+              <span class="font-comic">國民中學</span>
+              <span class="text-[10px] text-slate-400 font-normal">進階觀念學力測驗</span>
             </button>
-            <button class="stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-slate-700 bg-slate-800/80 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500" data-level="3">
-              <span class="text-lg sm:text-xl">🏛️</span>
-              <span>高級中學</span>
-              <span class="text-[10px] text-slate-400 mt-0.5 font-normal">大學前哨考驗</span>
+            <button class="stage-select-btn p-2 rounded-xl border-2 border-slate-700 bg-slate-800 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500" data-level="3">
+              <span class="text-xl">🏛️</span>
+              <span class="font-comic">高級中學</span>
+              <span class="text-[10px] text-slate-400 font-normal">第一志願大學殿堂</span>
             </button>
+          </div>
+
+          <!-- 遊戲機制指引提示 -->
+          <div class="bg-slate-900/90 rounded-xl p-2.5 border border-slate-700 text-[11px] text-slate-300 space-y-1">
+            <div class="text-yellow-300 font-bold flex items-center gap-1">
+              <span>📜 街機規則與八大領域：</span>
+            </div>
+            <p>
+              • 於校園地圖擲骰前進，停駐國文、英文、數學、自然、社會、藝術、健體、生活百科各館。
+            </p>
+            <p>
+              • 每次測驗 <b>5 題需對 3 題及格</b>；累積通過 <b>3 次關卡</b> 即可參加升學檢定考！
+            </p>
           </div>
         </div>
 
-        <!-- 8 大類科與行進規則簡介 -->
-        <div class="bg-slate-800/85 border border-slate-700 rounded-xl p-3 sm:p-4 max-w-xl text-left text-xs text-slate-200 leading-relaxed space-y-2 shadow-inner">
-          <div class="text-yellow-300 font-bold border-b border-slate-700/80 pb-1 flex justify-between">
-            <span>📜【 考核規定與 8 大學科指南 】</span>
-            <span class="text-emerald-400">目前題庫共 <b id="home-q-count">0</b> 題</span>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] text-yellow-100/90 font-bold">
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">📖 國文領域</span>
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🔤 英文領域</span>
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">📐 數學領域</span>
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🔬 自然領域</span>
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🌍 社會領域</span>
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">🎨 藝術領域</span>
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">⚽ 健體領域</span>
-            <span class="bg-slate-900/90 px-1.5 py-1 rounded border border-slate-700">💡 生活百科</span>
-          </div>
-          <p class="text-[11px] text-slate-300">
-            ★ <strong>過三關解鎖升學：</strong>於校園地圖擲骰停駐各科，每次測驗需連續完成 <strong>5 題挑戰</strong>。累積<strong>通過 3 次關卡</strong>，即可參加升級／畢業大檢定！
-          </p>
-        </div>
-
-        <div class="flex flex-wrap gap-3 items-center justify-center pt-1">
-          <button id="btn-start-game" class="px-8 py-3 bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-xl sm:text-2xl rounded-xl border-4 border-yellow-200 shadow-xl active:translate-y-1 transition blink">
-            🕹️ 投入代幣 開始挑戰 (START)
+        <!-- 投入代幣開始按鈕 -->
+        <div class="pt-1">
+          <button id="btn-start-game" class="px-8 sm:px-12 py-3 bg-gradient-to-b from-amber-300 via-amber-500 to-amber-600 hover:from-amber-200 hover:to-amber-400 text-slate-950 font-black text-xl sm:text-2xl rounded-2xl border-4 border-yellow-100 shadow-[0_8px_20px_rgba(245,158,11,0.5)] active:translate-y-1 transition font-comic flex items-center gap-2">
+            <span>🕹️</span>
+            <span>投入代幣 開始挑戰 (START)</span>
           </button>
         </div>
       </section>
 
-      <!-- [畫面 2: 大富翁雙六地圖路線] -->
-      <section id="screen-board" class="hidden flex flex-col justify-between flex-grow gap-3">
-        <!-- 頂部學階與進度狀態看板 -->
-        <div class="bg-slate-800/95 border-2 border-yellow-500/70 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow">
-          <div class="flex items-center gap-2.5">
-            <span id="board-rank-badge" class="bg-amber-600 text-white font-black text-xs sm:text-sm px-3 py-1 rounded border border-amber-300 shadow">
-              國民小學
-            </span>
-            <!-- 通過 3 關卡指示印章 -->
+      <!-- ======================================================== -->
+      <!-- [畫面 2: 大富翁校園雙六地圖路線] -->
+      <!-- ======================================================== -->
+      <section id="screen-board" class="hidden flex flex-col justify-between flex-grow gap-2 sm:gap-3">
+        <!-- 頂部學階、印章驗收進度與愛心狀態看板 -->
+        <div class="bg-slate-800/95 border-2 border-yellow-500/80 rounded-2xl p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+          <div class="flex items-center gap-2 sm:gap-3">
             <div class="flex items-center gap-1.5">
-              <span class="text-xs text-slate-300 font-bold">三關驗收進度:</span>
+              <span id="player-avatar-mini" class="w-8 h-8 rounded-full border-2 border-yellow-400 bg-slate-900 flex items-center justify-center overflow-hidden">
+                <!-- 頭像注入 -->
+              </span>
+              <span id="board-rank-badge" class="bg-amber-600 text-yellow-100 font-black text-xs sm:text-sm px-2.5 py-1 rounded-lg border border-amber-300 shadow font-comic">
+                國民小學
+              </span>
+            </div>
+
+            <!-- 通過 3 關卡指示印章 -->
+            <div class="flex items-center gap-1.5 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-700">
+              <span class="text-xs text-yellow-300 font-bold hidden sm:inline">關卡印章:</span>
               <div id="checkpoints-visual" class="flex gap-1">
                 <!-- 動態注入 3 顆印章 -->
               </div>
             </div>
           </div>
 
-          <div class="flex items-center gap-4">
-            <!-- 愛心 -->
-            <div class="flex items-center gap-1">
-              <span class="text-xs text-slate-400 font-bold">體力:</span>
-              <div id="board-lives" class="flex text-lg sm:text-xl">❤️❤️❤️</div>
+          <div class="flex items-center gap-3 sm:gap-5 font-comic">
+            <!-- 愛心體力 -->
+            <div class="flex items-center gap-1 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-700">
+              <span class="text-xs text-slate-300 font-bold mr-1">體力:</span>
+              <div id="board-lives" class="flex text-lg tracking-tight">❤️❤️❤️</div>
             </div>
             <!-- 分數 -->
-            <div>
-              <span class="text-xs text-slate-400 font-bold">累積積分:</span>
-              <span id="board-score" class="text-lg sm:text-xl font-black text-yellow-300 ml-1">0</span>
+            <div class="bg-slate-900/80 px-3 py-1 rounded-lg border border-slate-700">
+              <span class="text-xs text-slate-400 font-bold">學力積分:</span>
+              <span id="board-score" class="text-base sm:text-xl font-black text-yellow-300 ml-1 font-pixel">0</span>
             </div>
           </div>
         </div>
 
-        <!-- 棋盤格地圖區域 (14 格校園地圖，涵蓋 8 大領域) -->
-        <div class="bg-slate-950/90 border-2 border-slate-700 rounded-2xl p-2.5 sm:p-3 relative shadow-inner overflow-hidden">
-          <div class="text-[11px] font-bold text-slate-400 mb-2 flex items-center justify-between px-1">
-            <span id="board-stage-title-hint">🗺️ 國小校園八大學科巡迴地圖 (走訪各館進行 5 題測驗，通過 3 關啟動升級考)</span>
-            <span id="board-status-hint" class="text-yellow-400 font-bold">請點擊投擲骰子！</span>
+        <!-- 棋盤格地圖區域 (14 格校園地圖，涵蓋 8 大領域與保健室/福利社) -->
+        <div class="bg-slate-950/90 border-4 border-slate-700 rounded-3xl p-2.5 sm:p-3.5 relative shadow-inner overflow-hidden manga-halftone">
+          <div class="text-[11px] font-bold text-slate-300 mb-2 flex items-center justify-between px-1">
+            <span id="board-stage-title-hint" class="font-comic text-yellow-300 text-xs sm:text-sm">
+              🗺️ 國小校園八大學科巡迴雙六地圖
+            </span>
+            <span id="board-status-hint" class="text-amber-400 font-bold animate-pulse">
+              🎲 請投擲骰子決定前进步數！
+            </span>
           </div>
           
-          <!-- 棋盤格柵格 -->
-          <div id="tiles-grid" class="grid grid-cols-4 sm:grid-cols-7 gap-2">
+          <!-- 棋盤格柵格 (14 格雙六地圖) -->
+          <div id="tiles-grid" class="grid grid-cols-4 sm:grid-cols-7 gap-1.5 sm:gap-2">
             <!-- JS 動態生成 14 格 -->
           </div>
         </div>
 
-        <!-- 底部互動操作欄 (投骰控制、升級測驗快速通道) -->
-        <div class="bg-slate-800/90 border-2 border-yellow-500/50 rounded-xl p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-3">
+        <!-- 底部互動操作欄 (3D投骰控制、升級測驗快速通道) -->
+        <div class="bg-slate-800/90 border-2 border-yellow-500/60 rounded-2xl p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-3 shadow-xl">
           <!-- 骰子區域 -->
           <div class="flex items-center gap-3">
-            <div class="dice-container w-13 h-13 sm:w-14 sm:h-14 bg-gradient-to-br from-amber-100 to-amber-300 rounded-xl border-2 border-yellow-600 flex items-center justify-center shadow-lg">
-              <div id="dice-face" class="dice-box text-3xl sm:text-4xl font-black text-slate-900">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-amber-100 to-amber-300 rounded-2xl border-4 border-yellow-600 flex items-center justify-center shadow-lg relative cursor-pointer" id="dice-trigger-area">
+              <div id="dice-face" class="dice-cube text-3xl sm:text-4xl font-black text-slate-900">
                 ⚅
               </div>
             </div>
             <div>
-              <button id="btn-roll-dice" class="px-5 py-2 bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-base sm:text-lg rounded-xl border-2 border-yellow-200 shadow-lg active:translate-y-0.5 transition">
-                🎲 投擲骰子 (ROLL)
+              <button id="btn-roll-dice" class="px-5 py-2 bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-sm sm:text-base rounded-xl border-2 border-yellow-200 shadow-lg active:translate-y-0.5 transition font-comic flex items-center gap-1.5">
+                <span>🎲</span>
+                <span>投擲骰子 (ROLL)</span>
               </button>
-              <div id="roll-desc" class="text-[11px] text-slate-300 mt-0.5">點擊按鈕或按空白鍵擲骰</div>
+              <div id="roll-desc" class="text-[11px] text-slate-300 mt-0.5 font-bold">
+                按鈕或按空白鍵 [Space] 擲骰
+              </div>
             </div>
           </div>
 
-          <!-- 升級測驗解鎖按鈕 -->
+          <!-- 升學大檢定解鎖通道 -->
           <div class="flex items-center gap-2">
-            <button id="btn-promotion-exam" disabled class="px-4 py-2.5 bg-slate-700 text-slate-400 font-black text-xs sm:text-sm rounded-xl border-2 border-slate-600 shadow cursor-not-allowed transition flex items-center gap-1.5">
+            <button id="btn-promotion-exam" disabled class="px-4 py-2.5 bg-slate-700 text-slate-400 font-black text-xs sm:text-sm rounded-xl border-2 border-slate-600 shadow cursor-not-allowed transition flex items-center gap-1.5 font-comic">
               <span>🎓</span>
-              <span id="btn-promo-text">升級檢定測驗 (需滿3關)</span>
+              <span id="btn-promo-text">升級檢定大測驗 (尚差 3 關)</span>
             </button>
           </div>
         </div>
       </section>
 
-      <!-- [畫面 3: 5 題測驗作答主畫面] -->
-      <section id="screen-quiz" class="hidden flex flex-col justify-between h-full flex-grow gap-3">
-        <!-- 狀態列 (測驗類型、當前題號 1/5、愛心、計時) -->
-        <div class="flex flex-wrap items-center justify-between bg-slate-800/95 border-2 border-yellow-500/60 rounded-xl p-3 sm:px-5 shadow">
-          <div class="flex items-center gap-3">
-            <span id="quiz-badge-mode" class="bg-indigo-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded border border-indigo-300">
+      <!-- ======================================================== -->
+      <!-- [畫面 3: 5 題測驗作答主畫面 (黑板教室講台)] -->
+      <!-- ======================================================== -->
+      <section id="screen-quiz" class="hidden flex flex-col justify-between h-full flex-grow gap-2 sm:gap-3">
+        <!-- 頂部測驗進度與倒數計時 -->
+        <div class="flex flex-wrap items-center justify-between bg-slate-800/95 border-2 border-yellow-500/70 rounded-2xl p-2.5 sm:px-4 shadow-lg">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <span id="quiz-badge-mode" class="bg-indigo-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded-lg border border-indigo-300 font-comic">
               關卡測驗 (第 1/3 關)
             </span>
-            <span class="text-xs sm:text-sm font-bold text-slate-300">
-              題數進度：<span id="quiz-question-index" class="text-yellow-300 text-base font-black">1 / 5</span> 題
+            <span class="text-xs sm:text-sm font-bold text-slate-300 font-comic">
+              題數：<span id="quiz-question-index" class="text-yellow-300 text-base font-black font-pixel">1 / 5</span> 題
             </span>
           </div>
 
-          <div class="flex items-center gap-4">
-            <!-- 愛心生命值 -->
-            <div class="flex items-center gap-1">
+          <div class="flex items-center gap-3 sm:gap-4 font-comic">
+            <!-- 體力愛心 -->
+            <div class="flex items-center gap-1 bg-slate-900/80 px-2 py-0.5 rounded-lg border border-slate-700">
               <span class="text-xs text-slate-400 font-bold mr-1">體力:</span>
-              <div id="quiz-lives" class="flex text-lg sm:text-xl">
-                <span>❤️</span><span>❤️</span><span>❤️</span>
-              </div>
+              <div id="quiz-lives" class="flex text-lg tracking-tight">❤️❤️❤️</div>
             </div>
-            <!-- 本輪答對計數 -->
-            <div>
-              <span class="text-xs text-slate-400 font-bold">本輪答對:</span>
-              <span id="quiz-round-correct" class="text-base font-black text-emerald-400 ml-1">0</span>
-              <span class="text-xs text-slate-500">/ 5</span>
+            <!-- 本輪答對數 -->
+            <div class="bg-slate-900/80 px-2.5 py-0.5 rounded-lg border border-slate-700 text-xs text-slate-300 font-bold">
+              <span>本輪合格門檻: </span>
+              <span id="quiz-round-correct" class="text-emerald-400 text-sm font-black font-pixel">0</span>
+              <span id="quiz-pass-needed" class="text-slate-400">/ 3 及格</span>
             </div>
           </div>
         </div>
 
-        <!-- 倒數計時條 -->
-        <div class="w-full bg-slate-950 rounded-full h-3 border-2 border-slate-700 overflow-hidden relative">
+        <!-- 綜藝倒數計時條 -->
+        <div class="w-full bg-slate-950 rounded-full h-3.5 border-2 border-slate-700 overflow-hidden relative shadow-inner">
           <div id="timer-bar" class="h-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-red-500 transition-all duration-100 ease-linear" style="width: 100%;"></div>
-          <span id="timer-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white drop-shadow">10.0 秒</span>
+          <span id="timer-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white drop-shadow font-pixel">10.0 秒</span>
         </div>
 
-        <!-- 考題中央看板 -->
-        <div id="question-box" class="bg-slate-800/95 border-4 border-yellow-400/80 rounded-2xl p-4 sm:p-6 min-h-[145px] flex flex-col justify-center relative shadow-xl">
-          <div class="flex items-center justify-between mb-2">
-            <span id="q-category" class="bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded shadow">
-              國文領域
-            </span>
-            <span id="q-number" class="text-xs font-bold text-slate-400">考題 #1</span>
+        <!-- 中央黑板考題舞台 (附帶 Q版北野老師 與 Q版學生即時動態反應) -->
+        <div class="relative bg-slate-900 border-4 border-amber-900 rounded-3xl overflow-hidden shadow-2xl blackboard-bg p-3 sm:p-5 min-h-[220px] flex flex-col justify-between">
+          
+          <!-- 頂部黑板橫樑標語 -->
+          <div class="flex items-center justify-between border-b-2 border-white/20 pb-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="bg-yellow-400 text-slate-950 text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full font-comic shadow">
+                ★ 誠實勤勉
+              </span>
+              <span id="q-category" class="bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-0.5 rounded shadow font-comic">
+                國文領域
+              </span>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-bold text-yellow-200 font-pixel">
+              <span id="q-number">考題 #1</span>
+              <span id="combo-badge" class="hidden bg-red-600 text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-300 font-comic animate-bounce">COMBO x2!</span>
+            </div>
           </div>
-          <h2 id="q-text" class="text-base sm:text-xl font-bold text-white leading-relaxed tracking-wide">
-            考題載入中...
-          </h2>
+
+          <!-- 黑板講台人物互動區 (左: 老師對話框, 中: 題目文本, 右: 學生表情) -->
+          <div class="grid grid-cols-12 gap-2 sm:gap-4 items-center my-auto relative">
+            
+            <!-- 左側：Q版北野老師 (Sensei) -->
+            <div class="col-span-3 sm:col-span-2 flex flex-col items-center justify-center">
+              <div class="relative w-16 h-16 sm:w-20 sm:h-20" id="teacher-avatar-container">
+                <!-- SVG 北野老師 -->
+                <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md" id="svg-teacher">
+                  <!-- 老師學士帽 -->
+                  <polygon points="50,10 88,25 50,40 12,25" fill="#1e293b" stroke="#facc15" stroke-width="2"/>
+                  <rect x="42" y="32" width="16" height="10" fill="#0f172a"/>
+                  <path d="M50 25 L82 38 L84 52" stroke="#f59e0b" stroke-width="2.5" fill="none"/>
+                  <!-- 老師臉龐 -->
+                  <circle cx="50" cy="58" r="32" fill="#fed7aa" stroke="#1e293b" stroke-width="3"/>
+                  <!-- 粗眉毛與老花眼鏡 -->
+                  <path d="M28 46 Q38 42 45 46" stroke="#334155" stroke-width="3.5" fill="none"/>
+                  <path d="M55 46 Q62 42 72 46" stroke="#334155" stroke-width="3.5" fill="none"/>
+                  <circle cx="36" cy="54" r="9" fill="none" stroke="#b45309" stroke-width="2.5"/>
+                  <circle cx="64" cy="54" r="9" fill="none" stroke="#b45309" stroke-width="2.5"/>
+                  <line x1="45" y1="54" x2="55" y2="54" stroke="#b45309" stroke-width="3"/>
+                  <!-- 眼鏡反光 -->
+                  <path d="M30 50 L38 58" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M58 50 L66 58" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                  <!-- 可愛八字鬍鬚 -->
+                  <path d="M42 66 Q48 70 50 67 Q52 70 58 66" fill="#334155" stroke="#1e293b" stroke-width="2"/>
+                  <!-- 嘴巴表情 (動態切換) -->
+                  <path id="teacher-mouth" d="M44 73 Q50 78 56 73" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                </svg>
+                <!-- 怒氣十字標記 (答錯時出現) -->
+                <div id="teacher-anger-vein" class="hidden absolute -top-1 -right-1 text-red-500 text-lg font-black font-comic animate-bounce">
+                  💢
+                </div>
+              </div>
+              <span class="text-[10px] sm:text-xs font-black text-yellow-300 font-comic mt-0.5">北野老師</span>
+            </div>
+
+            <!-- 中間：題目主要文字看板 (黑板粉筆字風格) -->
+            <div class="col-span-9 sm:col-span-8 flex flex-col justify-center px-1 sm:px-3 text-left">
+              <!-- 老師的話 (漫畫氣泡) -->
+              <div id="teacher-dialogue-bubble" class="speech-bubble speech-bubble-left px-3 py-1.5 text-xs font-bold text-slate-900 mb-2 inline-block max-w-md">
+                請各位同學聽好題目，仔細作答！
+              </div>
+              <!-- 考題文本 -->
+              <h2 id="q-text" class="text-base sm:text-xl font-bold text-yellow-100 leading-relaxed tracking-wide drop-shadow-md font-comic">
+                考題載入中...
+              </h2>
+            </div>
+
+            <!-- 右側：玩家學生反應小像 (桌前作答) -->
+            <div class="hidden sm:flex sm:col-span-2 flex-col items-center justify-center">
+              <div class="relative w-16 h-16 sm:w-20 sm:h-20" id="student-quiz-avatar">
+                <!-- 注入動態學生 SVG -->
+              </div>
+              <span id="student-name-tag" class="text-[10px] sm:text-xs font-black text-amber-200 font-comic mt-0.5">小明同學</span>
+            </div>
+          </div>
+
+          <!-- 巨大正解花丸 / 錯誤印章蓋章層 -->
+          <div id="stamp-overlay" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+            <!-- 動態注入花丸或叉叉 -->
+          </div>
         </div>
 
-        <!-- 4 個選項按鈕 (街機大按鍵) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-          <button class="option-btn bg-slate-800 border-2 border-sky-400 hover:bg-sky-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="0">
-            <span class="w-7 h-7 rounded-lg bg-sky-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">1</span>
-            <span class="option-text flex-1">選項 A</span>
+        <!-- 4 個選項街機大按鈕 (A, B, C, D 街機鍵盤佈局) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 pt-1">
+          <!-- 選項 1 (紅) -->
+          <button class="arcade-btn-choice arcade-btn-a p-2.5 sm:p-3 rounded-2xl flex items-center gap-3 text-white font-bold text-sm sm:text-base border-2 border-red-300/80 group" data-choice="0">
+            <span class="w-8 h-8 rounded-xl bg-red-950/60 border border-red-200 text-yellow-300 flex items-center justify-center font-black text-base font-comic group-hover:scale-110 transition">
+              1 (A)
+            </span>
+            <span class="option-text flex-1 text-left tracking-wide font-comic drop-shadow">選項 A</span>
           </button>
-          <button class="option-btn bg-slate-800 border-2 border-emerald-400 hover:bg-emerald-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="1">
-            <span class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">2</span>
-            <span class="option-text flex-1">選項 B</span>
+
+          <!-- 選項 2 (藍) -->
+          <button class="arcade-btn-choice arcade-btn-b p-2.5 sm:p-3 rounded-2xl flex items-center gap-3 text-white font-bold text-sm sm:text-base border-2 border-sky-300/80 group" data-choice="1">
+            <span class="w-8 h-8 rounded-xl bg-sky-950/60 border border-sky-200 text-yellow-300 flex items-center justify-center font-black text-base font-comic group-hover:scale-110 transition">
+              2 (B)
+            </span>
+            <span class="option-text flex-1 text-left tracking-wide font-comic drop-shadow">選項 B</span>
           </button>
-          <button class="option-btn bg-slate-800 border-2 border-amber-400 hover:bg-amber-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="2">
-            <span class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">3</span>
-            <span class="option-text flex-1">選項 C</span>
+
+          <!-- 選項 3 (黃) -->
+          <button class="arcade-btn-choice arcade-btn-c p-2.5 sm:p-3 rounded-2xl flex items-center gap-3 text-slate-950 font-bold text-sm sm:text-base border-2 border-amber-200/80 group" data-choice="2">
+            <span class="w-8 h-8 rounded-xl bg-amber-950/60 border border-amber-200 text-yellow-300 flex items-center justify-center font-black text-base font-comic group-hover:scale-110 transition">
+              3 (C)
+            </span>
+            <span class="option-text flex-1 text-left tracking-wide font-comic drop-shadow text-slate-900">選項 C</span>
           </button>
-          <button class="option-btn bg-slate-800 border-2 border-purple-400 hover:bg-purple-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group" data-choice="3">
-            <span class="w-7 h-7 rounded-lg bg-purple-500 text-slate-950 flex items-center justify-center font-black text-sm group-hover:scale-110 transition">4</span>
-            <span class="option-text flex-1">選項 D</span>
+
+          <!-- 選項 4 (綠) -->
+          <button class="arcade-btn-choice arcade-btn-d p-2.5 sm:p-3 rounded-2xl flex items-center gap-3 text-white font-bold text-sm sm:text-base border-2 border-emerald-300/80 group" data-choice="3">
+            <span class="w-8 h-8 rounded-xl bg-emerald-950/60 border border-emerald-200 text-yellow-300 flex items-center justify-center font-black text-base font-comic group-hover:scale-110 transition">
+              4 (D)
+            </span>
+            <span class="option-text flex-1 text-left tracking-wide font-comic drop-shadow">選項 D</span>
           </button>
         </div>
       </section>
 
-      <!-- [畫面 4: 結算 / 畢業通關 / 留級重修] -->
-      <section id="screen-result" class="hidden flex flex-col items-center justify-center my-auto text-center gap-4 py-5">
-        <div id="result-icon" class="text-7xl">🎓</div>
+      <!-- ======================================================== -->
+      <!-- [畫面 4: 街機經典 CONTINUE? 倒數接關畫面] -->
+      <!-- ======================================================== -->
+      <section id="screen-continue" class="hidden flex flex-col items-center justify-center my-auto text-center gap-3 py-4">
+        <div class="relative bg-slate-950/95 border-4 border-red-600 rounded-3xl p-5 sm:p-8 max-w-lg w-full shadow-2xl space-y-4 manga-speed-lines">
+          <div class="text-red-500 font-comic text-2xl sm:text-3xl font-black tracking-widest animate-pulse">
+            ★ CONTINUE? 接關續命 ★
+          </div>
+          
+          <div id="continue-number" class="text-7xl sm:text-9xl font-black text-amber-300 text-manga-shadow font-pixel">
+            9
+          </div>
+
+          <div class="text-slate-300 text-xs sm:text-sm font-bold font-comic">
+            體力耗盡！學歷危機！是否投入代幣原地滿血復活？
+          </div>
+
+          <!-- 角色哭泣圖示 -->
+          <div class="text-5xl char-bounce">
+            😭💧
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
+            <button id="btn-continue-yes" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-base rounded-xl border-2 border-yellow-200 shadow-xl active:translate-y-0.5 transition font-comic">
+              🪙 投幣續關 (扣 1 代幣)
+            </button>
+            <button id="btn-continue-no" class="w-full sm:w-auto px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl border border-slate-600 transition">
+              放棄接關・結算成績
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- [畫面 5: 結算 / 畢業通關 / 留級重修] -->
+      <!-- ======================================================== -->
+      <section id="screen-result" class="hidden flex flex-col items-center justify-center my-auto text-center gap-3 py-3">
+        <!-- 結算慶祝櫻花紙屑容器 -->
+        <div id="sakura-container" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+
+        <div id="result-icon" class="text-6xl sm:text-7xl char-bounce">🎓</div>
+        
         <div class="space-y-1">
-          <h2 id="result-title" class="text-3xl sm:text-5xl font-black text-yellow-300 text-pixel-shadow">
+          <h2 id="result-title" class="text-3xl sm:text-5xl font-black text-yellow-300 text-manga-shadow font-comic">
             恭喜升學！
           </h2>
-          <p id="result-desc" class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto">
+          <p id="result-desc" class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto font-comic">
             表現優異，順利通過全階段升級檢定！
           </p>
         </div>
 
-        <div class="bg-slate-800 border-2 border-yellow-500/50 rounded-xl p-4 w-full max-w-md grid grid-cols-2 gap-3 text-center shadow-lg">
-          <div>
-            <div class="text-xs text-slate-400">最終榮獲學歷</div>
-            <div id="res-final-rank" class="text-base sm:text-lg font-black text-amber-300 mt-1">高級中學 畢業</div>
+        <!-- 獎狀 / 修業證書風格面版 -->
+        <div class="bg-slate-800 border-4 border-yellow-500 rounded-3xl p-4 sm:p-5 w-full max-w-lg grid grid-cols-2 gap-3 text-center shadow-2xl relative manga-dots-dark">
+          <div class="border-r border-slate-700 pr-2">
+            <div class="text-xs text-yellow-300 font-bold font-comic">最終榮獲學歷證明</div>
+            <div id="res-final-rank" class="text-base sm:text-lg font-black text-amber-300 mt-1 font-comic">
+              高級中學 畢業
+            </div>
           </div>
           <div>
-            <div class="text-xs text-slate-400">總學力積分</div>
-            <div id="res-final-score" class="text-2xl font-black text-emerald-400 mt-0.5">3200</div>
+            <div class="text-xs text-yellow-300 font-bold font-comic">總累積學力積分</div>
+            <div id="res-final-score" class="text-2xl sm:text-3xl font-black text-emerald-400 mt-0.5 font-pixel">
+              3200
+            </div>
           </div>
-          <div class="col-span-2 border-t border-slate-700 pt-2 flex justify-around text-xs text-slate-300">
-            <span>答對題數：<b id="res-correct-cnt" class="text-yellow-300">0</b> 題</span>
-            <span>答錯題數：<b id="res-wrong-cnt" class="text-red-400">0</b> 題</span>
+          <div class="col-span-2 border-t-2 border-slate-700/80 pt-2.5 flex justify-around text-xs font-bold text-slate-200">
+            <span>答對題數：<b id="res-correct-cnt" class="text-yellow-300 font-pixel text-sm">0</b> 題</span>
+            <span>答錯題數：<b id="res-wrong-cnt" class="text-red-400 font-pixel text-sm">0</b> 題</span>
+            <span>正確率：<b id="res-accuracy-rate" class="text-emerald-400 font-pixel text-sm">100%</b></span>
           </div>
         </div>
 
-        <div class="flex gap-3">
-          <button id="btn-restart" class="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-black text-sm rounded-xl border-2 border-yellow-200 shadow transition active:translate-y-0.5">
+        <!-- 操作按鈕 -->
+        <div class="flex gap-3 pt-1">
+          <button id="btn-restart" class="px-6 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black text-sm rounded-xl border-2 border-yellow-100 shadow transition active:translate-y-0.5 font-comic">
             🔄 重新挑戰 (RETRY)
           </button>
-          <button id="btn-back-home" class="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs rounded-xl border border-slate-500 transition">
-            返回階段首頁
+          <button id="btn-back-home" class="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs rounded-xl border border-slate-500 transition font-comic">
+            返回首頁換人
           </button>
         </div>
       </section>
 
     </main>
 
-    <!-- 底部操作提示 -->
-    <footer class="bg-slate-950/90 py-2 px-4 sm:px-6 border-t-2 border-slate-800 flex flex-wrap items-center justify-between text-[11px] text-slate-400 z-50">
+    <!-- ======================================================== -->
+    <!-- 底部操作提示與街機控制說明 (Cabinet Bottom Edge) -->
+    <!-- ======================================================== -->
+    <footer class="bg-slate-950/95 py-2 px-3 sm:px-6 border-t-2 border-slate-800 flex flex-wrap items-center justify-between text-[11px] text-slate-400 z-50">
       <div class="flex items-center gap-2">
-        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-        <span>民國教育委員會 (國小・國中・高中特裝版)</span>
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-bold text-slate-300">民國教育委員會 (日本Q版漫畫・八大學科學力雙六版)</span>
       </div>
-      <div class="flex gap-3">
-        <span>快捷鍵：[1-4] 答題 / [空白鍵] 擲骰</span>
-        <span>每次測驗：至少 5 題</span>
+      <div class="flex items-center gap-3 font-pixel">
+        <span class="text-yellow-300 font-bold">按鍵：[1-4 / A-D] 作答</span>
+        <span>[空白鍵] 擲骰</span>
+        <span>[C] 投幣</span>
       </div>
     </footer>
   </div>
@@ -380,13 +869,15 @@
   <!-- 支援依「各類科領域」上傳與管理的題庫 Modal 彈窗 -->
   <!-- ======================================================== -->
   <div id="modal-bank" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
-    <div class="bg-slate-900 border-4 border-yellow-500 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+    <div class="bg-slate-900 border-4 border-yellow-500 rounded-3xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
       
       <!-- Modal Header -->
       <div class="bg-slate-800 p-3.5 border-b-2 border-yellow-500/50 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="text-xl">📂</span>
-          <h2 class="text-sm sm:text-base font-black text-yellow-300">八大學科領域題庫管理與上傳中心</h2>
+          <h2 class="text-sm sm:text-base font-black text-yellow-300 font-comic">
+            八大學科領域題庫管理與上傳中心
+          </h2>
         </div>
         <button id="btn-close-bank" class="text-slate-400 hover:text-white text-2xl font-bold px-2">✕</button>
       </div>
@@ -395,9 +886,9 @@
       <div class="p-3 sm:p-5 flex-grow overflow-y-auto space-y-4 text-xs">
         
         <!-- 上傳區塊 (支援依指定領域類科匯入，或由檔案標籤自動識別) -->
-        <div class="bg-slate-800/80 border-2 border-dashed border-blue-400/60 rounded-xl p-3.5 sm:p-4 text-center">
+        <div class="bg-slate-800/80 border-2 border-dashed border-blue-400/60 rounded-2xl p-3.5 sm:p-4 text-center">
           <div class="text-2xl mb-1">📥</div>
-          <h3 class="text-sm font-bold text-yellow-200">上傳自訂題庫檔案 (支援 JSON 與 CSV 格式)</h3>
+          <h3 class="text-sm font-bold text-yellow-200 font-comic">上傳自訂題庫檔案 (支援 JSON 與 CSV 格式)</h3>
           <p class="text-slate-300 mt-1 mb-2.5">
             可依「國文、英文、數學、自然、社會、藝術、健體、生活百科」指定科目匯入，亦可包含在檔案欄位中自動分流。
           </p>
@@ -434,8 +925,8 @@
         </div>
 
         <!-- 手動新增單題 -->
-        <details class="bg-slate-800/80 rounded-xl border border-slate-700 p-3">
-          <summary class="font-bold text-yellow-300 cursor-pointer flex items-center justify-between">
+        <details class="bg-slate-800/80 rounded-2xl border border-slate-700 p-3">
+          <summary class="font-bold text-yellow-300 cursor-pointer flex items-center justify-between font-comic">
             <span>➕ 手動快速新增單題</span>
             <span class="text-[11px] text-slate-400">點擊展開</span>
           </summary>
@@ -474,7 +965,7 @@
               <input id="new-opt-3" type="text" placeholder="選項 4" required class="bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
             </div>
             <div>
-              <label class="block text-slate-300 mb-1">正確答案 (請指定哪一個選項正確)</label>
+              <label class="block text-slate-300 mb-1">正確答案 (指定正確選項)</label>
               <select id="new-q-correct" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-white">
                 <option value="0">選項 1 (A)</option>
                 <option value="1">選項 2 (B)</option>
@@ -482,7 +973,7 @@
                 <option value="3">選項 4 (D)</option>
               </select>
             </div>
-            <button type="submit" class="w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded shadow">
+            <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow font-comic">
               確認新增此題
             </button>
           </form>
@@ -492,7 +983,7 @@
         <div class="space-y-2">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
-              <h3 class="font-bold text-yellow-300">題庫清單 (<span id="modal-q-count">0</span> 題)</h3>
+              <h3 class="font-bold text-yellow-300 font-comic">題庫清單 (<span id="modal-q-count">0</span> 題)</h3>
               <!-- 篩選學階 -->
               <select id="filter-level" class="bg-slate-800 border border-slate-600 text-yellow-200 rounded px-1.5 py-0.5 text-xs">
                 <option value="ALL">全部學階</option>
@@ -514,24 +1005,24 @@
               </select>
             </div>
             <div class="flex gap-2">
-              <button id="btn-export-json" class="bg-slate-700 hover:bg-slate-600 px-2 py-1 rounded text-slate-200">
+              <button id="btn-export-json" class="bg-slate-700 hover:bg-slate-600 px-2.5 py-1 rounded text-slate-200 font-bold">
                 匯出題庫 JSON
               </button>
-              <button id="btn-reset-default" class="bg-red-800 hover:bg-red-700 px-2 py-1 rounded text-white">
+              <button id="btn-reset-default" class="bg-red-800 hover:bg-red-700 px-2.5 py-1 rounded text-white font-bold">
                 還原預設題庫
               </button>
             </div>
           </div>
 
-          <div class="max-h-52 overflow-y-auto border border-slate-700 rounded-lg">
+          <div class="max-h-56 overflow-y-auto border border-slate-700 rounded-xl">
             <table class="w-full text-left text-[11px] text-slate-300">
-              <thead class="bg-slate-800 text-yellow-300 sticky top-0">
+              <thead class="bg-slate-800 text-yellow-300 sticky top-0 font-comic">
                 <tr>
                   <th class="p-2 w-20">學科領域</th>
                   <th class="p-2 w-16">階段</th>
                   <th class="p-2">題目內文</th>
                   <th class="p-2 w-28">正確答案</th>
-                  <th class="p-2 w-10 text-center">刪除</th>
+                  <th class="p-2 w-12 text-center">刪除</th>
                 </tr>
               </thead>
               <tbody id="bank-table-body" class="divide-y divide-slate-800 bg-slate-900/90">
@@ -545,7 +1036,7 @@
 
       <!-- Modal Footer -->
       <div class="bg-slate-800 p-3 px-5 border-t border-slate-700 flex justify-end">
-        <button id="btn-modal-done" class="px-5 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold text-xs rounded-lg transition">
+        <button id="btn-modal-done" class="px-6 py-2 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black text-xs rounded-xl shadow transition font-comic">
           完成設定並關閉
         </button>
       </div>
@@ -554,14 +1045,21 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- 核心遊戲邏輯程式碼 -->
+  <!-- 核心遊戲音效與邏輯程式碼 -->
   <!-- ======================================================== -->
   <script>
-    class ArcadeSoundFX {
+    /* ========================================================
+       1. 復古街機晶片級音效合成器 (Arcade PSG / FM Synthesizer)
+       ======================================================== */
+    class RetroArcadeAudio {
       constructor() {
         this.ctx = null;
-        this.enabled = true;
+        this.soundEnabled = true;
+        this.bgmEnabled = true;
+        this.bgmTimer = null;
+        this.bgmStep = 0;
       }
+
       init() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -571,63 +1069,130 @@
           this.ctx.resume();
         }
       }
-      playTone(freq, type = 'square', duration = 0.1, gain = 0.1) {
-        if (!this.enabled) return;
+
+      playTone(freq, type = 'square', duration = 0.1, gain = 0.1, delay = 0) {
+        if (!this.soundEnabled) return;
         this.init();
-        try {
-          const osc = this.ctx.createOscillator();
-          const g = this.ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          g.gain.setValueAtTime(gain, this.ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-          osc.connect(g);
-          g.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + duration);
-        } catch(e) {}
+        setTimeout(() => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            g.gain.setValueAtTime(gain, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+            osc.connect(g);
+            g.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+          } catch(e) {}
+        }, delay);
       }
+
+      // 投幣聲 (Coin Clink & Ching)
       coin() {
-        this.playTone(987.77, 'sine', 0.08, 0.15);
-        setTimeout(() => this.playTone(1318.51, 'sine', 0.2, 0.2), 85);
+        this.playTone(987.77, 'sine', 0.08, 0.18, 0);
+        this.playTone(1318.51, 'sine', 0.25, 0.22, 60);
       }
+
+      // 骰子滾動聲
       diceRoll() {
-        for(let i = 0; i < 4; i++) {
-          setTimeout(() => this.playTone(400 + Math.random() * 320, 'sawtooth', 0.04, 0.08), i * 45);
+        for (let i = 0; i < 5; i++) {
+          this.playTone(350 + Math.random() * 400, 'sawtooth', 0.04, 0.08, i * 45);
         }
       }
+
+      // 棋子蹦跳步伐聲 (Boing Jump)
       step() {
-        this.playTone(720, 'square', 0.05, 0.09);
+        this.playTone(587.33, 'triangle', 0.06, 0.12, 0);
+        this.playTone(880.00, 'sine', 0.08, 0.15, 30);
       }
+
+      // 答對正解花丸音 (Hanamaru Fanfare)
       correct() {
-        this.playTone(523.25, 'triangle', 0.1, 0.2);
-        setTimeout(() => this.playTone(659.25, 'triangle', 0.1, 0.2), 90);
-        setTimeout(() => this.playTone(783.99, 'triangle', 0.12, 0.2), 180);
-        setTimeout(() => this.playTone(1046.50, 'triangle', 0.25, 0.25), 270);
+        this.playTone(523.25, 'triangle', 0.09, 0.2, 0);   // C5
+        this.playTone(659.25, 'triangle', 0.09, 0.2, 80);  // E5
+        this.playTone(783.99, 'triangle', 0.10, 0.2, 160); // G5
+        this.playTone(1046.50, 'triangle', 0.28, 0.25, 240); // C6
       }
+
+      // 連續答對 COMBO 特效音
+      combo() {
+        this.playTone(659.25, 'sine', 0.08, 0.2, 0);
+        this.playTone(880.00, 'sine', 0.08, 0.2, 70);
+        this.playTone(1174.66, 'sine', 0.25, 0.25, 140);
+      }
+
+      // 答錯粉筆砸擊失誤音 (Wrong Boing & Clatter)
       wrong() {
-        this.playTone(220, 'sawtooth', 0.15, 0.25);
-        setTimeout(() => this.playTone(164.81, 'sawtooth', 0.25, 0.3), 150);
+        this.playTone(220, 'sawtooth', 0.15, 0.25, 0);
+        this.playTone(155, 'sawtooth', 0.25, 0.3, 110);
+        this.playTone(110, 'sawtooth', 0.35, 0.35, 220);
       }
+
+      // 倒數急迫秒針滴答 (Tick)
       tick() {
-        this.playTone(850, 'square', 0.03, 0.04);
+        this.playTone(880, 'square', 0.03, 0.05, 0);
       }
+
+      // 勝利升級通關大號角 (Victory Fanfare)
       fanfare() {
-        const notes = [440, 554, 659, 880, 1108];
+        const notes = [440, 554, 659, 880, 880, 1108];
         notes.forEach((freq, idx) => {
-          setTimeout(() => this.playTone(freq, 'triangle', 0.22, 0.25), idx * 105);
+          this.playTone(freq, 'triangle', 0.22, 0.25, idx * 95);
         });
       }
+
+      // 補給吃肉包/保健室回血音 (Heal)
       heal() {
-        this.playTone(400, 'sine', 0.1, 0.15);
-        setTimeout(() => this.playTone(600, 'sine', 0.1, 0.2), 90);
-        setTimeout(() => this.playTone(800, 'sine', 0.2, 0.25), 180);
+        this.playTone(440, 'sine', 0.1, 0.15, 0);
+        this.playTone(659, 'sine', 0.1, 0.2, 80);
+        this.playTone(880, 'sine', 0.2, 0.25, 160);
+      }
+
+      // 接關心跳倒數警報音 (Continue Alarm)
+      alarm() {
+        this.playTone(180, 'sawtooth', 0.08, 0.2, 0);
+        this.playTone(240, 'sawtooth', 0.08, 0.2, 90);
+      }
+
+      // 16-bit 街機輕快 BGM 合成循環
+      startBGM() {
+        if (!this.bgmEnabled) return;
+        this.init();
+        if (this.bgmTimer) clearInterval(this.bgmTimer);
+
+        // 輕快的日本益智電視節目經典旋律小調
+        const melody = [
+          523.25, 0, 659.25, 783.99, 0, 659.25, 880.00, 0,
+          783.99, 659.25, 523.25, 0, 587.33, 659.25, 587.33, 0
+        ];
+
+        this.bgmStep = 0;
+        this.bgmTimer = setInterval(() => {
+          if (!this.bgmEnabled) return;
+          const note = melody[this.bgmStep % melody.length];
+          if (note > 0) {
+            this.playTone(note, 'sine', 0.12, 0.03, 0);
+            this.playTone(note / 2, 'triangle', 0.15, 0.03, 0); // 低音伴奏
+          }
+          this.bgmStep++;
+        }, 180);
+      }
+
+      stopBGM() {
+        if (this.bgmTimer) {
+          clearInterval(this.bgmTimer);
+          this.bgmTimer = null;
+        }
       }
     }
 
-    const sound = new ArcadeSoundFX();
+    const sound = new RetroArcadeAudio();
 
-    // 嚴格涵蓋：國小(1)、國中(2)、高中(3) 及 8 大學科領域
+    /* ========================================================
+       2. 嚴選題庫系統 (保留原本八大學科並擴增趣味題庫)
+       ======================================================== */
     const DEFAULT_QUESTION_BANK = [
       // ==========================================
       // [等級 1: 國民小學] - 八大領域
@@ -648,6 +1213,8 @@
       { id: 114, level: 1, category: "健康與體育", q: "在田徑跑步比賽中，跑道直線衝刺抵達終點時應如何衝線？", options: ["突然停下", "身體前傾壓線通過", "跳躍回頭看", "用手推隔壁選手"], ans: 1 },
       { id: 115, level: 1, category: "生活百科", q: "在台灣街道上的郵筒，若要寄送「限時專送」信件應投進哪種顏色郵筒？", options: ["紅色郵筒", "綠色郵筒", "黃色郵筒", "藍色郵筒"], ans: 0 },
       { id: 116, level: 1, category: "生活百科", q: "遇到火災濃煙時，下列哪一項是正確的逃生避難動作？", options: ["乘坐電梯下樓", "採低姿勢沿牆爬行避難", "站高大口呼吸", "躲進沒有對外窗的浴室"], ans: 1 },
+      { id: 117, level: 1, category: "國文", q: "成語「守株待兔」是用來比喻什麼樣的人？", options: ["不知變通妄想坐享其成", "非常勤勞勇敢", "很會照顧小動物", "跑步速度極快"], ans: 0 },
+      { id: 118, level: 1, category: "生活百科", q: "在台灣撥打哪一個緊急電話號碼可以通報火警與救護車？", options: ["110", "119", "112", "1999"], ans: 1 },
 
       // ==========================================
       // [等級 2: 國民中學] - 八大領域
@@ -668,6 +1235,7 @@
       { id: 214, level: 2, category: "健康與體育", q: "在標準籃球比賽中，球員被吹判幾次犯規即必須離場（犯滿畢業）？", options: ["4次", "5次", "6次", "7次"], ans: 1 },
       { id: 215, level: 2, category: "生活百科", q: "台灣發生地震時，內政部消防署推廣的避難三步驟順序為？", options: ["趴下、掩護、穩住", "快跑、開門、打卡", "關瓦斯、拿皮包、跑下樓", "躲進衣櫥、打電話、大叫"], ans: 0 },
       { id: 216, level: 2, category: "生活百科", q: "一般小型家用滅火器的正確操作口訣為何？", options: ["拉、瞄、壓、掃", "充、脫、泡、蓋、送", "看、聽、聞、摸", "按、推、搖、噴"], ans: 0 },
+      { id: 217, level: 2, category: "社會", q: "促成台灣九年國民義務教育開始實施的年代是西元幾年（民國57年）？", options: ["1958年", "1968年", "1978年", "1988年"], ans: 1 },
 
       // ==========================================
       // [等級 3: 高級中學] - 八大領域
@@ -690,13 +1258,142 @@
       { id: 316, level: 3, category: "生活百科", q: "在日常資訊安全防護中，為防止帳號遭盜用，最佳的資安設定策略為？", options: ["所有網站使用相同密碼", "啟用雙重驗證 (2FA/MFA)", "從不登出公用電腦", "密碼設定為生日"], ans: 1 }
     ];
 
-    // 嚴格精簡為國小、國中、高中三大階段
+    /* ========================================================
+       3. 角色形象與動態 SVG 模板 (日本Q版漫畫風格)
+       ======================================================== */
+    const CHARACTERS = {
+      xiaoming: {
+        name: "小明",
+        title: "熱血男同學",
+        color: "#3b82f6",
+        svg: (mood = 'normal') => {
+          let eyeL = '<ellipse cx="36" cy="54" rx="5" ry="7" fill="#0f172a"/><circle cx="38" cy="52" r="2.5" fill="#ffffff"/>';
+          let eyeR = '<ellipse cx="64" cy="54" rx="5" ry="7" fill="#0f172a"/><circle cx="66" cy="52" r="2.5" fill="#ffffff"/>';
+          let mouth = '<path d="M42 66 Q50 74 58 66" stroke="#0f172a" stroke-width="3.5" fill="#ef4444" stroke-linecap="round"/>';
+          let extra = '';
+
+          if (mood === 'happy') {
+            eyeL = '<path d="M30 54 Q37 46 44 54" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round"/>';
+            eyeR = '<path d="M56 54 Q63 46 70 54" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round"/>';
+            mouth = '<path d="M40 64 Q50 78 60 64 Z" fill="#ef4444" stroke="#0f172a" stroke-width="3"/>';
+            extra = '<circle cx="24" cy="42" r="5" fill="#fbbf24"/><circle cx="76" cy="42" r="5" fill="#fbbf24"/>';
+          } else if (mood === 'wrong') {
+            eyeL = '<circle cx="36" cy="54" r="7" fill="none" stroke="#0f172a" stroke-width="3"/><path d="M33 51 L39 57 M39 51 L33 57" stroke="#0f172a" stroke-width="2"/>';
+            eyeR = '<circle cx="64" cy="54" r="7" fill="none" stroke="#0f172a" stroke-width="3"/><path d="M61 51 L67 57 M67 51 L61 57" stroke="#0f172a" stroke-width="2"/>';
+            mouth = '<path d="M40 72 Q50 64 60 72" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round"/>';
+            extra = '<path d="M34 60 L34 82 M66 60 L66 82" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>'; // 面條淚
+          } else if (mood === 'panic') {
+            mouth = '<path d="M42 69 Q46 64 50 69 Q54 74 58 69" stroke="#0f172a" stroke-width="3.5" fill="none"/>';
+            extra = '<path d="M78 40 Q84 45 78 50" fill="#38bdf8" class="sweat-drop"/>'; // 冷汗
+          }
+
+          return `
+            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+              <circle cx="50" cy="50" r="38" fill="#fed7aa" stroke="#1e293b" stroke-width="4"/>
+              <path d="M15 42 Q50 18 85 42 L80 34 Q50 12 20 34 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="3"/>
+              <path d="M10 44 Q50 38 90 44 L86 48 Q50 42 14 48 Z" fill="#3b82f6" stroke="#0f172a" stroke-width="2"/>
+              <circle cx="50" cy="32" r="5" fill="#facc15" stroke="#713f12" stroke-width="2"/>
+              <path d="M30 42 Q40 50 50 42 Q60 50 70 42" stroke="#1e293b" stroke-width="4" fill="none"/>
+              ${eyeL}
+              ${eyeR}
+              <ellipse cx="28" cy="62" rx="4" ry="2.5" fill="#f87171" opacity="0.8"/>
+              <ellipse cx="72" cy="62" rx="4" ry="2.5" fill="#f87171" opacity="0.8"/>
+              ${mouth}
+              ${extra}
+            </svg>
+          `;
+        }
+      },
+      xiaoying: {
+        name: "小櫻",
+        title: "元氣女同學",
+        color: "#ec4899",
+        svg: (mood = 'normal') => {
+          let eyeL = '<ellipse cx="37" cy="53" rx="6" ry="8" fill="#0f172a"/><circle cx="39" cy="50" r="3" fill="#ffffff"/><circle cx="35" cy="56" r="1.5" fill="#ffffff"/>';
+          let eyeR = '<ellipse cx="63" cy="53" rx="6" ry="8" fill="#0f172a"/><circle cx="65" cy="50" r="3" fill="#ffffff"/><circle cx="61" cy="56" r="1.5" fill="#ffffff"/>';
+          let mouth = '<path d="M43 65 Q50 72 57 65" stroke="#0f172a" stroke-width="3" fill="#f43f5e" stroke-linecap="round"/>';
+          let extra = '';
+
+          if (mood === 'happy') {
+            eyeL = '<path d="M30 52 Q37 44 44 52" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round"/>';
+            eyeR = '<path d="M56 52 Q63 44 70 52" stroke="#0f172a" stroke-width="4" fill="none" stroke-linecap="round"/>';
+            mouth = '<path d="M42 63 Q50 76 58 63 Z" fill="#f43f5e" stroke="#0f172a" stroke-width="2.5"/>';
+            extra = '<text x="18" y="32" font-size="14">🌸</text><text x="72" y="32" font-size="14">✨</text>';
+          } else if (mood === 'wrong') {
+            eyeL = '<path d="M30 50 L44 58 M44 50 L30 58" stroke="#0f172a" stroke-width="3.5"/>';
+            eyeR = '<path d="M56 50 L70 58 M70 50 L56 58" stroke="#0f172a" stroke-width="3.5"/>';
+            mouth = '<circle cx="50" cy="69" r="6" fill="#ef4444" stroke="#0f172a" stroke-width="2.5"/>';
+            extra = '<path d="M34 60 L34 84 M66 60 L66 84" stroke="#38bdf8" stroke-width="4"/>';
+          } else if (mood === 'panic') {
+            mouth = '<path d="M44 68 Q50 63 56 68" stroke="#0f172a" stroke-width="3" fill="none"/>';
+            extra = '<circle cx="82" cy="45" r="4" fill="#38bdf8"/>';
+          }
+
+          return `
+            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+              <path d="M16 38 C6 20 2 60 18 64 C22 55 22 45 24 38 Z" fill="#9a3412" stroke="#1e293b" stroke-width="3"/>
+              <path d="M84 38 C94 20 98 60 82 64 C78 55 78 45 76 38 Z" fill="#9a3412" stroke="#1e293b" stroke-width="3"/>
+              <circle cx="50" cy="50" r="36" fill="#fde68a" stroke="#1e293b" stroke-width="4"/>
+              <path d="M26 38 Q50 48 74 38" fill="#b45309" stroke="#1e293b" stroke-width="3"/>
+              <path d="M30 42 Q50 25 70 42 Q50 36 30 42 Z" fill="#b45309"/>
+              ${eyeL}
+              ${eyeR}
+              <ellipse cx="28" cy="62" rx="5" ry="3" fill="#fb7185" opacity="0.9"/>
+              <ellipse cx="72" cy="62" rx="5" ry="3" fill="#fb7185" opacity="0.9"/>
+              ${mouth}
+              ${extra}
+            </svg>
+          `;
+        }
+      },
+      xiaobo: {
+        name: "小博",
+        title: "天才小學霸",
+        color: "#10b981",
+        svg: (mood = 'normal') => {
+          let eyeL = '<circle cx="37" cy="52" r="11" fill="none" stroke="#0f172a" stroke-width="3.5"/><path d="M30 46 L40 56" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>';
+          let eyeR = '<circle cx="63" cy="52" r="11" fill="none" stroke="#0f172a" stroke-width="3.5"/><path d="M56 46 L66 56" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>';
+          let mouth = '<path d="M44 68 Q50 71 56 68" stroke="#0f172a" stroke-width="3" fill="none" stroke-linecap="round"/>';
+          let extra = '';
+
+          if (mood === 'happy') {
+            mouth = '<path d="M42 66 Q50 75 58 66 Z" fill="#ef4444" stroke="#0f172a" stroke-width="2.5"/>';
+            extra = '<text x="18" y="34" font-size="14">💯</text><text x="70" y="34" font-size="14">✨</text>';
+          } else if (mood === 'wrong') {
+            // 眼鏡破裂
+            eyeL = '<circle cx="37" cy="52" r="11" fill="none" stroke="#0f172a" stroke-width="3.5"/><path d="M32 48 L42 56 M36 46 L38 58" stroke="#ef4444" stroke-width="2"/>';
+            eyeR = '<circle cx="63" cy="52" r="11" fill="none" stroke="#0f172a" stroke-width="3.5"/><path d="M58 48 L68 56" stroke="#ef4444" stroke-width="2"/>';
+            mouth = '<path d="M44 72 Q50 66 56 72" stroke="#0f172a" stroke-width="3" fill="none"/>';
+            extra = '<path d="M37 63 L37 80 M63 63 L63 80" stroke="#38bdf8" stroke-width="3"/>';
+          } else if (mood === 'panic') {
+            mouth = '<ellipse cx="50" cy="70" rx="5" ry="3" fill="#0f172a"/>';
+            extra = '<circle cx="80" cy="42" r="3.5" fill="#38bdf8"/>';
+          }
+
+          return `
+            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+              <circle cx="50" cy="50" r="36" fill="#fed7aa" stroke="#1e293b" stroke-width="4"/>
+              <path d="M20 40 Q50 20 80 40 L80 32 Q50 15 20 32 Z" fill="#334155" stroke="#1e293b" stroke-width="3"/>
+              ${eyeL}
+              ${eyeR}
+              <line x1="48" y1="52" x2="52" y2="52" stroke="#0f172a" stroke-width="4"/>
+              ${mouth}
+              ${extra}
+            </svg>
+          `;
+        }
+      }
+    };
+
+    /* ========================================================
+       4. 學習階段設定 (國小、國中、高中)
+       ======================================================== */
     const STAGES = [
       {
         level: 1,
         name: "國民小學",
         shortName: "國小",
-        mapDesc: "國小校園八大學科巡迴地圖",
+        mapDesc: "國小校園八大學科巡迴雙六地圖",
         timePerQ: 10,
         passingCorrect: 3, // 5 題對 3 題及格
         promoCorrect: 4    // 升級考 5 題對 4 題晉級
@@ -705,7 +1402,7 @@
         level: 2,
         name: "國民中學",
         shortName: "國中",
-        mapDesc: "國中校園八大學科巡迴地圖",
+        mapDesc: "國中校園八大學科巡迴雙六地圖",
         timePerQ: 9.5,
         passingCorrect: 3,
         promoCorrect: 4
@@ -714,35 +1411,34 @@
         level: 3,
         name: "高級中學",
         shortName: "高中",
-        mapDesc: "高中校園八大學科巡迴地圖 (榮譽畢業試煉)",
+        mapDesc: "高中校園八大學科巡迴雙六地圖 (第一志願大學殿堂考驗)",
         timePerQ: 9.0,
         passingCorrect: 3,
         promoCorrect: 4
       }
     ];
 
-    // 8 大領域標準清單
-    const CORE_CATEGORIES = ["國文", "英文", "數學", "自然", "社會", "藝術", "健康與體育", "生活百科"];
-
-    // 14 格校園地圖模板 (每格皆精準對應 8 大領域與輔助格)
+    /* ========================================================
+       5. 14 格精緻校園雙六地圖設計 (涵蓋8大領域與特殊格)
+       ======================================================== */
     const BASE_BOARD_TILES = [
-      { id: 0, title: "校門起點", icon: "🏫", category: "綜合", desc: "巡禮重振，學力加持！", type: "event" },
-      { id: 1, title: "國文講堂", icon: "📖", category: "國文", desc: "詩詞成語・文史考驗", type: "quiz" },
-      { id: 2, title: "英語角落", icon: "🔤", category: "英文", desc: "單字文法・世界之窗", type: "quiz" },
-      { id: 3, title: "數理樓閣", icon: "📐", category: "數學", desc: "邏輯推理・幾何心算", type: "quiz" },
-      { id: 4, title: "校園福利社", icon: "🍱", category: "體能", desc: "買瓶冰冬瓜茶，體力+1！", type: "heal" },
-      { id: 5, title: "自然科學館", icon: "🔬", category: "自然", desc: "萬物生態・理化奧秘", type: "quiz" },
-      { id: 6, title: "社會史地館", icon: "🌍", category: "社會", desc: "歷史風雲・世界地理", type: "quiz" },
-      { id: 7, title: "期中綜合考核", icon: "🚩", category: "綜合", desc: "全領域檢定 (通過算1關)", type: "checkpoint" },
-      { id: 8, title: "美學音樂室", icon: "🎨", category: "藝術", desc: "色彩視藝・音律素養", type: "quiz" },
-      { id: 9, title: "健康體育場", icon: "⚽", category: "健康與體育", desc: "急救生理・運動競賽", type: "quiz" },
-      { id: 10, title: "校園保健室", icon: "💊", category: "體能", desc: "量體溫休息，體力+1！", type: "heal" },
-      { id: 11, title: "生活百科站", icon: "💡", category: "生活百科", desc: "居家安全・常識避難", type: "quiz" },
-      { id: 12, title: "跨領域大會考", icon: "📝", category: "綜合", desc: "八大領域 5 題大挑戰", type: "quiz" },
-      { id: 13, title: "升學衝刺關", icon: "🎓", category: "綜合", desc: "關卡檢測站 (通過算1關)", type: "checkpoint" }
+      { id: 0, title: "校門起點", icon: "🏫", category: "綜合", desc: "精神飽滿，學力加持！", type: "event" },
+      { id: 1, title: "國文講堂", icon: "📜", category: "國文", desc: "成語詩詞・經典文史", type: "quiz" },
+      { id: 2, title: "外語長廊", icon: "🔤", category: "英文", desc: "世界之窗・日常字彙", type: "quiz" },
+      { id: 3, title: "數理樓閣", icon: "📐", category: "數學", desc: "邏輯推導・心算幾何", type: "quiz" },
+      { id: 4, title: "校園福利社", icon: "🍱", category: "體能", desc: "熱騰騰肉包與冬瓜茶，體力+1！", type: "heal" },
+      { id: 5, title: "自然科學館", icon: "🔬", category: "自然", desc: "生態奧秘・理化實驗", type: "quiz" },
+      { id: 6, title: "史地社會館", icon: "🌏", category: "社會", desc: "歷史風雲・台灣與世界", type: "quiz" },
+      { id: 7, title: "期中驗收站", icon: "🚩", category: "綜合", desc: "全學科檢定 (通過算1關)", type: "checkpoint" },
+      { id: 8, title: "音樂美術室", icon: "🎨", category: "藝術", desc: "名畫賞析・五線旋律", type: "quiz" },
+      { id: 9, title: "健康體育場", icon: "⚽", category: "健康與體育", desc: "運動競賽・生理急救", type: "quiz" },
+      { id: 10, title: "校園保健室", icon: "💊", category: "體能", desc: "校醫阿姨溫柔包紮，體力+1！", type: "heal" },
+      { id: 11, title: "生活百科站", icon: "💡", category: "生活百科", desc: "防災急轉彎・日常常識", type: "quiz" },
+      { id: 12, title: "訓導處突擊考", icon: "📝", category: "綜合", desc: "主任巡堂！八科 5 題大挑戰", type: "quiz" },
+      { id: 13, title: "期末升學關", icon: "🎓", category: "綜合", desc: "晉級考核站 (通過算1關)", type: "checkpoint" }
     ];
 
-    const STORAGE_KEY = 'ROC_QUIZ_3STAGES_8CATS_BANK_V3';
+    const STORAGE_KEY = 'ROC_QUIZ_MANGA_CHIBI_BANK_V4';
     let questionBank = [];
 
     function initQuestionBank() {
@@ -776,6 +1472,10 @@
       document.getElementById('modal-q-count').innerText = count;
     }
 
+    /* ========================================================
+       6. 遊戲運行狀態變數 (Game State Machine)
+       ======================================================== */
+    let selectedCharKey = 'xiaoming';
     let currentStageIndex = 0;   // 0: 國小, 1: 國中, 2: 高中
     let stagePassedCount = 0;    // 本階段已過關次數 (滿 3 次可升級考)
     const REQUIRED_CHECKPOINTS = 3;
@@ -784,9 +1484,11 @@
     let totalScore = 0;
     let totalCorrectCount = 0;
     let totalWrongCount = 0;
+    let comboCount = 0;
+    let credits = 1;             // 街機代幣數
     let isDiceRolling = false;
 
-    // 每次測驗的 5 題狀態
+    // 5 題測驗狀態
     let currentQuizQueue = [];
     let currentQIndex = 0;
     let currentQuizCorrect = 0;
@@ -794,11 +1496,14 @@
     let timerInterval = null;
     let timeLeft = 10;
     let isAnswering = false;
+    let continueTimer = null;
+    let continueCount = 9;
 
     // DOM 快取
     const screenStart = document.getElementById('screen-start');
     const screenBoard = document.getElementById('screen-board');
     const screenQuiz = document.getElementById('screen-quiz');
+    const screenContinue = document.getElementById('screen-continue');
     const screenResult = document.getElementById('screen-result');
 
     const boardRankBadge = document.getElementById('board-rank-badge');
@@ -813,70 +1518,124 @@
     const btnPromoText = document.getElementById('btn-promo-text');
     const boardStatusHint = document.getElementById('board-status-hint');
     const boardStageTitleHint = document.getElementById('board-stage-title-hint');
+    const playerAvatarMini = document.getElementById('player-avatar-mini');
 
     // 測驗畫面 DOM
     const quizBadgeMode = document.getElementById('quiz-badge-mode');
     const quizQuestionIndex = document.getElementById('quiz-question-index');
     const quizLives = document.getElementById('quiz-lives');
     const quizRoundCorrect = document.getElementById('quiz-round-correct');
+    const quizPassNeeded = document.getElementById('quiz-pass-needed');
     const timerBar = document.getElementById('timer-bar');
     const timerText = document.getElementById('timer-text');
     const qCategory = document.getElementById('q-category');
     const qNumber = document.getElementById('q-number');
     const qText = document.getElementById('q-text');
-    const optionBtns = document.querySelectorAll('.option-btn');
+    const comboBadge = document.getElementById('combo-badge');
+    const teacherDialogueBubble = document.getElementById('teacher-dialogue-bubble');
+    const teacherAngerVein = document.getElementById('teacher-anger-vein');
+    const teacherMouth = document.getElementById('teacher-mouth');
+    const studentQuizAvatar = document.getElementById('student-quiz-avatar');
+    const studentNameTag = document.getElementById('student-name-tag');
+    const stampOverlay = document.getElementById('stamp-overlay');
+    const optionBtns = document.querySelectorAll('.arcade-btn-choice');
+    const creditBadge = document.getElementById('credit-badge');
 
-    // 首頁學習階段按鈕切換
-    document.querySelectorAll('.stage-select-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const lvl = parseInt(btn.getAttribute('data-level'));
-        currentStageIndex = lvl - 1;
+    /* ========================================================
+       7. 角色挑選與頭像即時刷新
+       ======================================================== */
+    function setTeacherMood(mood = 'normal', text = '') {
+      if (text) {
+        teacherDialogueBubble.innerText = text;
+      }
+      if (mood === 'happy') {
+        teacherMouth.setAttribute('d', 'M40 70 Q50 82 60 70 Z');
+        teacherMouth.setAttribute('fill', '#ef4444');
+        teacherAngerVein.classList.add('hidden');
+      } else if (mood === 'angry') {
+        teacherMouth.setAttribute('d', 'M40 76 Q50 68 60 76');
+        teacherMouth.setAttribute('fill', 'none');
+        teacherAngerVein.classList.remove('hidden');
+      } else {
+        teacherMouth.setAttribute('d', 'M44 73 Q50 78 56 73');
+        teacherMouth.setAttribute('fill', 'none');
+        teacherAngerVein.classList.add('hidden');
+      }
+    }
 
-        document.querySelectorAll('.stage-select-btn').forEach(b => {
-          b.className = "stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-slate-700 bg-slate-800/80 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500";
+    function updateStudentAvatar(mood = 'normal') {
+      const charObj = CHARACTERS[selectedCharKey];
+      studentQuizAvatar.innerHTML = charObj.svg(mood);
+      studentNameTag.innerText = `${charObj.name} 同學`;
+      playerAvatarMini.innerHTML = charObj.svg('normal');
+    }
+
+    // 角色選擇卡點擊
+    document.querySelectorAll('.char-card').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedCharKey = btn.getAttribute('data-char');
+        document.querySelectorAll('.char-card').forEach(c => {
+          c.className = "char-card p-2 sm:p-3 rounded-xl border-4 border-slate-700 bg-slate-800/80 text-slate-300 flex flex-col items-center transition hover:border-slate-500 cursor-pointer";
         });
-
-        btn.className = "stage-select-btn p-2.5 sm:p-3 rounded-lg border-2 border-yellow-400 bg-amber-500/25 text-yellow-200 font-black text-xs sm:text-sm flex flex-col items-center transition shadow-lg scale-105";
+        btn.className = "char-card p-2 sm:p-3 rounded-xl border-4 border-yellow-400 bg-amber-500/25 text-yellow-200 flex flex-col items-center transition shadow-lg scale-105 cursor-pointer";
         sound.coin();
       });
     });
 
-    // 構建地圖 14 格介面
+    // 學階選擇切換
+    document.querySelectorAll('.stage-select-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lvl = parseInt(btn.getAttribute('data-level'));
+        currentStageIndex = lvl - 1;
+
+        document.querySelectorAll('.stage-select-btn').forEach(b => {
+          b.className = "stage-select-btn p-2 rounded-xl border-2 border-slate-700 bg-slate-800 text-slate-300 font-black text-xs sm:text-sm flex flex-col items-center transition hover:border-slate-500";
+        });
+
+        btn.className = "stage-select-btn p-2 rounded-xl border-2 border-yellow-400 bg-amber-500/25 text-yellow-200 font-black text-xs sm:text-sm flex flex-col items-center transition shadow scale-105";
+        sound.coin();
+      });
+    });
+
+    /* ========================================================
+       8. 構建地圖 14 格雙六介面
+       ======================================================== */
     function buildBoardGrid() {
       tilesGrid.innerHTML = '';
       const stage = STAGES[currentStageIndex];
-      boardStageTitleHint.innerText = `🗺️ 【${stage.name}】校園八大學科巡迴地圖`;
+      boardStageTitleHint.innerText = `🗺️ 【${stage.name}】校園八大學科巡迴雙六地圖`;
 
       BASE_BOARD_TILES.forEach((tile, idx) => {
         const div = document.createElement('div');
         div.id = `tile-${idx}`;
-        div.className = `relative p-2 rounded-xl border border-slate-700 bg-slate-900/90 flex flex-col justify-between transition-all duration-300 min-h-[72px] sm:min-h-[85px] text-center ${idx === playerPos ? 'tile-active ring-2 ring-yellow-400' : ''}`;
+        div.className = `tile-board-cell relative p-1.5 sm:p-2 rounded-2xl border-2 border-slate-700 bg-slate-900/90 flex flex-col justify-between min-h-[70px] sm:min-h-[85px] text-center ${idx === playerPos ? 'tile-current' : ''}`;
         
         let typeBadge = '';
         if (tile.type === 'checkpoint') {
-          typeBadge = '<span class="absolute top-1 right-1 text-[9px] bg-red-600 text-white px-1 rounded font-black">檢定</span>';
+          typeBadge = '<span class="absolute top-1 right-1 text-[8px] sm:text-[9px] bg-red-600 text-white px-1 rounded-full font-black font-comic">檢定</span>';
         } else if (tile.type === 'heal') {
-          typeBadge = '<span class="absolute top-1 right-1 text-[9px] bg-emerald-600 text-white px-1 rounded font-black">補體</span>';
+          typeBadge = '<span class="absolute top-1 right-1 text-[8px] sm:text-[9px] bg-emerald-600 text-white px-1 rounded-full font-black font-comic">回血</span>';
         }
 
         div.innerHTML = `
           ${typeBadge}
           <div class="text-xl sm:text-2xl">${tile.icon}</div>
-          <div class="text-[11px] sm:text-xs font-bold text-slate-100 truncate mt-0.5">${tile.title}</div>
-          <div class="text-[9px] text-amber-300/90 truncate font-semibold">${tile.category}</div>
+          <div class="text-[11px] sm:text-xs font-black truncate mt-0.5 font-comic">${tile.title}</div>
+          <div class="tile-sub-text text-[9px] text-amber-300/90 truncate font-bold font-comic">${tile.category}</div>
           <div id="player-token-${idx}" class="text-xs absolute bottom-1 left-1/2 transform -translate-x-1/2 ${idx === playerPos ? 'block' : 'hidden'}">
-            <span class="animate-bounce inline-block">🎒🏃</span>
+            <span class="inline-block animate-bounce text-sm">🎒</span>
           </div>
         `;
         tilesGrid.appendChild(div);
       });
     }
 
-    // 更新棋盤面板與印章狀態
+    // 更新棋盤面板狀態
     function updateBoardUI() {
       const stage = STAGES[currentStageIndex];
       boardRankBadge.innerText = stage.name;
       boardScore.innerText = totalScore;
+      updateStudentAvatar('normal');
 
       // 體力愛心
       let h = '';
@@ -885,27 +1644,27 @@
       }
       boardLives.innerHTML = h;
 
-      // 3 次關卡驗收指示器
+      // 3 次關卡驗收印章
       let cpVisual = '';
       for (let i = 0; i < REQUIRED_CHECKPOINTS; i++) {
         if (i < stagePassedCount) {
-          cpVisual += `<span class="px-2 py-0.5 bg-emerald-600 text-white rounded text-[10px] font-black border border-emerald-300 shadow">第${i+1}關 ✓</span>`;
+          cpVisual += `<span class="px-2 py-0.5 bg-emerald-600 text-white rounded text-[10px] font-black border border-emerald-300 shadow font-comic">第${i+1}關 💮</span>`;
         } else {
-          cpVisual += `<span class="px-2 py-0.5 bg-slate-700 text-slate-400 rounded text-[10px] border border-slate-600">第${i+1}關 待考</span>`;
+          cpVisual += `<span class="px-2 py-0.5 bg-slate-700 text-slate-400 rounded text-[10px] border border-slate-600 font-comic">第${i+1}關 待考</span>`;
         }
       }
       checkpointsVisual.innerHTML = cpVisual;
 
-      // 判斷是否解鎖升級／畢業測驗
+      // 判斷是否解鎖升級考
       const isFinalStage = (currentStageIndex === STAGES.length - 1);
       if (stagePassedCount >= REQUIRED_CHECKPOINTS) {
         btnPromotionExam.disabled = false;
-        btnPromotionExam.className = "px-4 sm:px-5 py-2.5 bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 text-slate-950 font-black text-xs sm:text-sm rounded-xl border-2 border-yellow-200 shadow-xl active:translate-y-0.5 transition cursor-pointer blink gold-glow";
+        btnPromotionExam.className = "px-4 sm:px-5 py-2.5 bg-gradient-to-r from-red-600 via-yellow-500 to-red-600 text-slate-950 font-black text-xs sm:text-sm rounded-xl border-2 border-yellow-200 shadow-xl active:translate-y-0.5 transition cursor-pointer animate-bounce font-comic";
         btnPromoText.innerText = isFinalStage ? `🎓 參加「${stage.name}榮譽畢業大試煉」！` : `🎓 參加「${stage.name}升級檢定考」！`;
-        boardStatusHint.innerHTML = `<span class="text-emerald-400 font-bold">🎉 已滿 3 關！可立即點擊參加升級大測驗！</span>`;
+        boardStatusHint.innerHTML = `<span class="text-emerald-400 font-bold">🎉 已集滿 3 關！可立即點擊參加升學大檢定！</span>`;
       } else {
         btnPromotionExam.disabled = true;
-        btnPromotionExam.className = "px-4 py-2.5 bg-slate-700 text-slate-400 font-black text-xs sm:text-sm rounded-xl border-2 border-slate-600 shadow cursor-not-allowed transition flex items-center gap-1.5";
+        btnPromotionExam.className = "px-4 py-2.5 bg-slate-700 text-slate-400 font-black text-xs sm:text-sm rounded-xl border-2 border-slate-600 shadow cursor-not-allowed transition flex items-center gap-1.5 font-comic";
         btnPromoText.innerText = isFinalStage ? `高中畢業試煉 (尚差 ${REQUIRED_CHECKPOINTS - stagePassedCount} 關)` : `升級檢定考 (尚差 ${REQUIRED_CHECKPOINTS - stagePassedCount} 關)`;
       }
 
@@ -915,27 +1674,29 @@
         const tokenEl = document.getElementById(`player-token-${idx}`);
         if (tileEl && tokenEl) {
           if (idx === playerPos) {
-            tileEl.classList.add('tile-active', 'ring-2', 'ring-yellow-400');
+            tileEl.classList.add('tile-current');
             tokenEl.classList.remove('hidden');
           } else {
-            tileEl.classList.remove('tile-active', 'ring-2', 'ring-yellow-400');
+            tileEl.classList.remove('tile-current');
             tokenEl.classList.add('hidden');
           }
         }
       });
     }
 
+    /* ========================================================
+       9. 骰子投擲與行進動畫
+       ======================================================== */
     const DICE_ICONS = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
-    // 擲骰子事件
-    btnRollDice.addEventListener('click', () => {
+    function rollDiceAction() {
       if (isDiceRolling) return;
       isDiceRolling = true;
       btnRollDice.disabled = true;
       rollDesc.innerText = "骰子疾速翻滾中...";
       sound.diceRoll();
 
-      diceFace.classList.add('dice-rolling');
+      diceFace.classList.add('dice-rolling-3d');
 
       let rollTicks = 0;
       const rollInterval = setInterval(() => {
@@ -944,18 +1705,21 @@
         rollTicks++;
         if (rollTicks >= 12) {
           clearInterval(rollInterval);
-          diceFace.classList.remove('dice-rolling');
+          diceFace.classList.remove('dice-rolling-3d');
           
           const finalRoll = Math.floor(Math.random() * 6) + 1;
           diceFace.innerText = DICE_ICONS[finalRoll - 1];
-          rollDesc.innerText = `投出 ${finalRoll} 點！學生前進中...`;
+          rollDesc.innerText = `投出 ${finalRoll} 點！學生疾奔前進中...`;
 
           movePlayerSteps(finalRoll);
         }
       }, 45);
-    });
+    }
 
-    // 逐步位移
+    btnRollDice.addEventListener('click', rollDiceAction);
+    document.getElementById('dice-trigger-area').addEventListener('click', rollDiceAction);
+
+    // 棋子逐格跳躍
     function movePlayerSteps(stepsLeft) {
       if (stepsLeft <= 0) {
         isDiceRolling = false;
@@ -970,7 +1734,7 @@
 
       setTimeout(() => {
         movePlayerSteps(stepsLeft - 1);
-      }, 260);
+      }, 250);
     }
 
     // 停留在格子觸發對應測驗或補給
@@ -982,19 +1746,19 @@
         sound.heal();
         if (lives < 3) {
           lives++;
-          showBoardMessage("❤️ 休息補給，體力愛心 +1！");
+          showBoardMessage("❤️ 買熱肉包與冬瓜茶，體力愛心 +1！");
         } else {
           totalScore += 250;
-          showBoardMessage("✨ 體力已全滿，額外獎勵學力積分 250 分！");
+          showBoardMessage("✨ 體力已全滿，轉化為學力獎勵積分 +250 分！");
         }
         updateBoardUI();
       } else if (tile.type === 'event') {
         totalScore += 150;
         sound.coin();
-        showBoardMessage("🏫 校門巡禮重振精神，學力加持 +150 分！");
+        showBoardMessage("🏫 校門巡禮精神抖擻，全能學力 +150 分！");
         updateBoardUI();
       } else {
-        // 進入 5 題學科測驗 (指定該格類科或綜合)
+        // 進入 5 題學科測驗
         setTimeout(() => {
           startQuizRound(false, tile.category);
         }, 550);
@@ -1002,33 +1766,33 @@
     }
 
     function showBoardMessage(msg) {
-      boardStatusHint.innerHTML = `<span class="text-yellow-300 font-bold animate-pulse">${msg}</span>`;
+      boardStatusHint.innerHTML = `<span class="text-yellow-300 font-bold font-comic animate-pulse">${msg}</span>`;
     }
 
-    // 啟動 5 題測驗
+    /* ========================================================
+       10. 5 題作答主程序 (黑板教室講台)
+       ======================================================== */
     function startQuizRound(isPromo = false, subjectFilter = null) {
       isPromotionExam = isPromo;
       currentQIndex = 0;
       currentQuizCorrect = 0;
+      comboCount = 0;
       isAnswering = false;
 
       const stage = STAGES[currentStageIndex];
-      // 依當前階段篩選考題 (1: 國小, 2: 國中, 3: 高中)
       let pool = questionBank.filter(q => q.level === stage.level);
 
-      // 若有指定 8 大學科領域，且題目充足，則優先抽選該科
+      // 若有指定科目，優先篩選
       if (subjectFilter && subjectFilter !== "綜合") {
         const catPool = pool.filter(q => q.category === subjectFilter);
         if (catPool.length >= 5) {
           pool = catPool;
         } else {
-          // 若該科題目少於 5 題，混合該科與其他題目補足
           const others = pool.filter(q => q.category !== subjectFilter);
           pool = [...catPool, ...others];
         }
       }
 
-      // 若該階段題目不足 5 題，放寬至全題庫
       if (pool.length < 5) {
         pool = [...questionBank];
       }
@@ -1037,30 +1801,35 @@
       const shuffled = [...pool].sort(() => 0.5 - Math.random());
       currentQuizQueue = shuffled.slice(0, 5);
 
-      // 切換至測驗主畫面
+      // 介面切換
       screenStart.classList.add('hidden');
       screenBoard.classList.add('hidden');
       screenResult.classList.add('hidden');
+      screenContinue.classList.add('hidden');
       screenQuiz.classList.remove('hidden');
 
       if (isPromotionExam) {
         const isFinal = (currentStageIndex === STAGES.length - 1);
-        quizBadgeMode.innerText = isFinal ? `🏆 ${stage.name}・全能畢業終極試煉` : `🎓 ${stage.name}・升學資格大檢定`;
-        quizBadgeMode.className = "bg-red-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded border border-yellow-300 gold-glow";
+        quizBadgeMode.innerText = isFinal ? `🏆 ${stage.name}・最高學歷榮譽試煉` : `🎓 ${stage.name}・升學資格大檢定`;
+        quizBadgeMode.className = "bg-red-600 text-yellow-200 font-black text-xs sm:text-sm px-2.5 py-1 rounded-lg border-2 border-yellow-300 shadow font-comic animate-pulse";
+        quizPassNeeded.innerText = `/ ${stage.promoCorrect} 及格`;
       } else {
         const subjectTag = (subjectFilter && subjectFilter !== "綜合") ? `【${subjectFilter}】` : '【綜合大會考】';
         quizBadgeMode.innerText = `📝 關卡考核 ${subjectTag} (第 ${stagePassedCount + 1}/3 關)`;
-        quizBadgeMode.className = "bg-indigo-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded border border-indigo-300";
+        quizBadgeMode.className = "bg-indigo-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 rounded-lg border border-indigo-300 font-comic";
+        quizPassNeeded.innerText = `/ ${stage.passingCorrect} 及格`;
       }
 
       loadQuestion(0);
     }
 
-    // 載入考題
+    // 載入題目
     function loadQuestion(idx) {
       clearInterval(timerInterval);
       isAnswering = false;
       resetOptionButtons();
+      stampOverlay.classList.add('hidden');
+      stampOverlay.innerHTML = '';
 
       currentQIndex = idx;
       const qData = currentQuizQueue[idx];
@@ -1069,23 +1838,37 @@
       quizQuestionIndex.innerText = `${idx + 1} / 5`;
       quizRoundCorrect.innerText = currentQuizCorrect;
 
-      // 愛心
+      // 刷新愛心
       let h = '';
       for (let i = 0; i < 3; i++) {
-        h += (i < lives) ? '<span>❤️</span>' : '<span class="opacity-30">💔</span>';
+        h += (i < lives) ? '❤️' : '<span class="opacity-30">💔</span>';
       }
       quizLives.innerHTML = h;
 
+      // 題目資訊
       qCategory.innerText = `${qData.category}領域`;
       qNumber.innerText = `考題 #${idx + 1}`;
       qText.innerText = qData.q;
 
+      // 老師與學生狀態刷新
+      setTeacherMood('normal', `第 ${idx + 1} 題：${qData.category}考驗，請選擇正確答案！`);
+      updateStudentAvatar('normal');
+
+      // 更新 Combo 徽章
+      if (comboCount >= 2) {
+        comboBadge.innerText = `COMBO x${comboCount}!`;
+        comboBadge.classList.remove('hidden');
+      } else {
+        comboBadge.classList.add('hidden');
+      }
+
+      // 按鈕文字注入
       optionBtns.forEach((btn, optIdx) => {
         const txt = btn.querySelector('.option-text');
         txt.innerText = qData.options[optIdx] || `選項 ${optIdx + 1}`;
       });
 
-      // 10 秒計時條
+      // 倒數計時條 (10秒)
       timeLeft = stage.timePerQ || 10;
       const initialTime = timeLeft;
       timerBar.style.width = '100%';
@@ -1100,6 +1883,8 @@
 
         if (timeLeft <= 3.0 && timeLeft > 0) {
           sound.tick();
+          setTeacherMood('normal', '時間快到了！快選！');
+          updateStudentAvatar('panic');
         }
 
         if (timeLeft <= 0) {
@@ -1118,36 +1903,58 @@
       const qData = currentQuizQueue[currentQIndex];
       const isCorrect = (choiceIdx === qData.ans);
 
+      // 選項按鈕視覺鎖定
       optionBtns.forEach((btn, idx) => {
         btn.disabled = true;
         if (idx === qData.ans) {
-          btn.classList.add('bg-emerald-600', 'border-emerald-300', 'text-white');
+          btn.classList.add('ring-4', 'ring-yellow-300', 'scale-105');
         } else if (idx === choiceIdx) {
-          btn.classList.add('bg-red-700', 'border-red-400', 'shake');
+          btn.classList.add('opacity-70');
         } else {
           btn.classList.add('opacity-40');
         }
       });
 
       if (isCorrect) {
-        sound.correct();
+        // 答對邏輯
+        comboCount++;
         currentQuizCorrect++;
         totalCorrectCount++;
-        const timeBonus = Math.floor(timeLeft * 80);
-        totalScore += (150 + timeBonus);
+        const speedBonus = Math.floor(timeLeft * 80);
+        const comboBonus = (comboCount > 1) ? (comboCount * 50) : 0;
+        totalScore += (150 + speedBonus + comboBonus);
+
+        if (comboCount >= 2) {
+          sound.combo();
+        } else {
+          sound.correct();
+        }
+
+        // 漫畫正解花丸印章「💮 正解！」
+        showStamp(true);
+        setTeacherMood('happy', `大正解！太優秀了！(+${150 + speedBonus + comboBonus}分)`);
+        updateStudentAvatar('happy');
       } else {
-        sound.wrong();
+        // 答錯邏輯
+        comboCount = 0;
         lives--;
         totalWrongCount++;
-        document.getElementById('question-box').classList.add('shake');
-        setTimeout(() => document.getElementById('question-box').classList.remove('shake'), 350);
+        sound.wrong();
+
+        // 漫畫大紅叉叉「❌ 不正解！」
+        showStamp(false);
+        setTeacherMood('angry', `不對喔！正確答案是：【${qData.options[qData.ans]}】！`);
+        updateStudentAvatar('wrong');
+
+        document.getElementById('svg-teacher').classList.add('head-shake');
+        setTimeout(() => document.getElementById('svg-teacher').classList.remove('head-shake'), 400);
       }
 
       quizRoundCorrect.innerText = currentQuizCorrect;
 
       setTimeout(() => {
         if (lives <= 0) {
-          endGame(false);
+          triggerContinueCountdown();
           return;
         }
 
@@ -1156,13 +1963,35 @@
         } else {
           finishQuizRound();
         }
-      }, 1400);
+      }, 1600);
+    }
+
+    // 蓋上日本漫畫正解印章
+    function showStamp(isCorrect) {
+      stampOverlay.innerHTML = '';
+      stampOverlay.classList.remove('hidden');
+
+      if (isCorrect) {
+        stampOverlay.innerHTML = `
+          <div class="hanamaru-stamp flex flex-col items-center justify-center p-3 rounded-full border-8 border-red-600 bg-red-600/20 text-red-500 font-black shadow-2xl">
+            <span class="text-7xl font-comic">💮</span>
+            <span class="text-2xl font-comic text-red-600 bg-white/90 px-3 py-0.5 rounded-full border-2 border-red-600 mt-1">正解！</span>
+          </div>
+        `;
+      } else {
+        stampOverlay.innerHTML = `
+          <div class="wrong-stamp flex flex-col items-center justify-center p-3 rounded-full border-8 border-red-700 bg-red-700/20 text-red-600 font-black shadow-2xl">
+            <span class="text-7xl font-comic">❌</span>
+            <span class="text-2xl font-comic text-white bg-red-700 px-3 py-0.5 rounded-full border-2 border-white mt-1">殘念！</span>
+          </div>
+        `;
+      }
     }
 
     function resetOptionButtons() {
       optionBtns.forEach(btn => {
         btn.disabled = false;
-        btn.className = "option-btn bg-slate-800 border-2 border-sky-400 hover:bg-sky-950 text-left p-3 rounded-xl flex items-center gap-3 text-slate-100 font-bold text-sm sm:text-base group";
+        btn.classList.remove('ring-4', 'ring-yellow-300', 'scale-105', 'opacity-70', 'opacity-40');
       });
     }
 
@@ -1172,60 +2001,60 @@
       const stage = STAGES[currentStageIndex];
 
       if (isPromotionExam) {
-        // 升級或畢業考需達 promoCorrect (4題)
         if (currentQuizCorrect >= stage.promoCorrect) {
           sound.fanfare();
           if (currentStageIndex === STAGES.length - 1) {
-            // 高中畢業，破關！
-            endGame(true);
+            endGame(true); // 高中畢業，破關！
           } else {
             currentStageIndex++;
             stagePassedCount = 0;
-            showTransitionScreen(
+            showTransitionCard(
               `🎉 升學合格！晉升【${STAGES[currentStageIndex].name}】`,
-              `恭喜以 <b>${currentQuizCorrect}/5 題</b> 的佳績通過大檢定！<br>邁入新學階，請在新校園地圖再通過 3 次關卡驗收！`
+              `恭喜以 <b>${currentQuizCorrect}/5 題</b> 的優異成績通過大檢定！<br>邁入新校園，請再集滿 3 次關卡驗收！`
             );
           }
         } else {
           sound.wrong();
-          showTransitionScreen(
+          showTransitionCard(
             `❌ 升學檢定未達標 (答對 ${currentQuizCorrect}/5 題)`,
-            `大考需至少答對 ${stage.promoCorrect} 題。<br>請回校園地圖繼續磨練，再次挑戰！`
+            `大考需至少答對 <b>${stage.promoCorrect} 題</b>。<br>請回校園地圖繼續磨練，再次挑戰！`
           );
         }
       } else {
-        // 一般關卡考驗需達 passingCorrect (3題)
         if (currentQuizCorrect >= stage.passingCorrect) {
           sound.fanfare();
           if (stagePassedCount < REQUIRED_CHECKPOINTS) {
             stagePassedCount++;
           }
-          showTransitionScreen(
+          showTransitionCard(
             `✅ 關卡驗收合格！(答對 ${currentQuizCorrect}/5 題)`,
             `順利完成第 <b>${stagePassedCount} / 3</b> 次關卡考驗！<br>${stagePassedCount >= 3 ? '🔥 已解鎖升級檢定考資格！' : '請繼續投骰探索校園，集滿 3 次關卡！'}`
           );
         } else {
           sound.wrong();
-          showTransitionScreen(
+          showTransitionCard(
             `⚠️ 關卡考驗未通過 (答對 ${currentQuizCorrect}/5 題)`,
-            `需至少答對 3 題才算合格。<br>請重新投骰前進挑戰其他科目！`
+            `需至少答對 <b>3 題</b> 才算及格。<br>請重新投骰前進挑戰其他科目！`
           );
         }
       }
     }
 
-    // 過場提示牌
-    function showTransitionScreen(title, htmlMsg) {
+    // 過場公告告示牌
+    function showTransitionCard(title, htmlMsg) {
       qCategory.innerText = "【 成果公告 】";
       qNumber.innerText = "RESULT";
-      qText.innerHTML = `<div class="text-xl font-black text-yellow-300 mb-1">${title}</div><div class="text-sm text-slate-200">${htmlMsg}</div>`;
+      qText.innerHTML = `
+        <div class="text-xl font-black text-yellow-300 font-comic mb-1">${title}</div>
+        <div class="text-sm text-slate-200 font-comic">${htmlMsg}</div>
+      `;
 
       setTimeout(() => {
         screenQuiz.classList.add('hidden');
         screenBoard.classList.remove('hidden');
         buildBoardGrid();
         updateBoardUI();
-      }, 2400);
+      }, 2500);
     }
 
     // 點擊「參加升級檢定」
@@ -1235,12 +2064,62 @@
       startQuizRound(true, "綜合");
     });
 
-    // 遊戲結算 (順利畢業 或 留級重修)
-    function endGame(isGraduate) {
+    /* ========================================================
+       11. 街機經典 CONTINUE 接關倒數程序
+       ======================================================== */
+    function triggerContinueCountdown() {
       clearInterval(timerInterval);
       screenQuiz.classList.add('hidden');
       screenBoard.classList.add('hidden');
       screenStart.classList.add('hidden');
+      screenResult.classList.add('hidden');
+      screenContinue.classList.remove('hidden');
+
+      continueCount = 9;
+      const numEl = document.getElementById('continue-number');
+      numEl.innerText = continueCount;
+      sound.alarm();
+
+      if (continueTimer) clearInterval(continueTimer);
+      continueTimer = setInterval(() => {
+        continueCount--;
+        numEl.innerText = continueCount;
+        sound.alarm();
+
+        if (continueCount <= 0) {
+          clearInterval(continueTimer);
+          endGame(false); // 倒數結束，Game Over
+        }
+      }, 1000);
+    }
+
+    // 投幣續關
+    document.getElementById('btn-continue-yes').addEventListener('click', () => {
+      clearInterval(continueTimer);
+      if (credits <= 0) credits = 1; // 自動補充
+      credits--;
+      creditBadge.innerText = `CREDIT: ${credits < 10 ? '0' + credits : credits}`;
+      sound.coin();
+      lives = 3;
+      showTransitionCard("🔥 接關成功！滿血復活！", "繼續向最高學歷巔峰衝刺！");
+    });
+
+    document.getElementById('btn-continue-no').addEventListener('click', () => {
+      clearInterval(continueTimer);
+      endGame(false);
+    });
+
+    /* ========================================================
+       12. 遊戲結算 (順利畢業 / 留級重修)
+       ======================================================== */
+    function endGame(isGraduate) {
+      clearInterval(timerInterval);
+      if (continueTimer) clearInterval(continueTimer);
+
+      screenQuiz.classList.add('hidden');
+      screenBoard.classList.add('hidden');
+      screenStart.classList.add('hidden');
+      screenContinue.classList.add('hidden');
       screenResult.classList.remove('hidden');
 
       const resIcon = document.getElementById('result-icon');
@@ -1250,27 +2129,51 @@
       const resFinalScore = document.getElementById('res-final-score');
       const resCorrectCnt = document.getElementById('res-correct-cnt');
       const resWrongCnt = document.getElementById('res-wrong-cnt');
+      const resAccuracyRate = document.getElementById('res-accuracy-rate');
 
       resFinalScore.innerText = totalScore;
       resCorrectCnt.innerText = totalCorrectCount;
       resWrongCnt.innerText = totalWrongCount;
 
+      const totalQ = totalCorrectCount + totalWrongCount;
+      const acc = totalQ > 0 ? Math.round((totalCorrectCount / totalQ) * 100) : 0;
+      resAccuracyRate.innerText = `${acc}%`;
+
       if (isGraduate) {
         sound.fanfare();
         resIcon.innerText = "🏆";
         resTitle.innerText = "榮獲全通關：高中第一名畢業！";
-        resTitle.className = "text-3xl sm:text-5xl font-black text-yellow-300 text-pixel-shadow";
-        resDesc.innerText = "恭喜完成國小、國中至高中的八大學科重重考驗，榮登民國教育委員會最高榮譽榜！";
-        resFinalRank.innerText = "高級中學 (榜首畢業)";
+        resTitle.className = "text-3xl sm:text-5xl font-black text-yellow-300 text-manga-shadow font-comic";
+        resDesc.innerText = "恭喜完成國小、國中至高中的八大學科重重考驗，榮登民國教育委員會最高榮譽榜首！";
+        resFinalRank.innerText = "國立第一志願大學 (金榜題名)";
+        createSakuraPetals();
       } else {
         resIcon.innerText = "☠️";
         resTitle.innerText = "體力耗盡！留級重修！";
-        resTitle.className = "text-3xl sm:text-5xl font-black text-red-500 text-pixel-shadow";
+        resTitle.className = "text-3xl sm:text-5xl font-black text-red-500 text-manga-shadow font-comic";
         resDesc.innerText = "愛心扣光未能通過考驗。請重新投入代幣，再度向學歷巔峰邁進！";
         resFinalRank.innerText = `${STAGES[currentStageIndex].name} (留級修業)`;
       }
     }
 
+    function createSakuraPetals() {
+      const container = document.getElementById('sakura-container');
+      container.innerHTML = '';
+      for (let i = 0; i < 30; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.width = (10 + Math.random() * 12) + 'px';
+        petal.style.height = (12 + Math.random() * 14) + 'px';
+        petal.style.animationDuration = (3 + Math.random() * 3) + 's';
+        petal.style.animationDelay = (Math.random() * 2) + 's';
+        container.appendChild(petal);
+      }
+    }
+
+    /* ========================================================
+       13. 題庫管理中心 (Modal, JSON, CSV)
+       ======================================================== */
     const modalBank = document.getElementById('modal-bank');
     const bankTableBody = document.getElementById('bank-table-body');
     const fileUploader = document.getElementById('file-uploader');
@@ -1293,7 +2196,7 @@
       filtered.forEach((item) => {
         const originalIndex = questionBank.findIndex(q => q.id === item.id);
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-800/80 transition";
+        tr.className = "hover:bg-slate-800/80 transition font-comic";
         const stageObj = STAGES.find(s => s.level === item.level) || { shortName: `Lv.${item.level}` };
         const correctText = item.options[item.ans] || `選項 ${item.ans + 1}`;
 
@@ -1322,7 +2225,7 @@
     filterLevel.addEventListener('change', renderBankTable);
     filterCategory.addEventListener('change', renderBankTable);
 
-    // 檔案解析上傳 (支援 JSON 與 CSV，並可指定類科)
+    // 檔案解析上傳 (支援 JSON 與 CSV)
     fileUploader.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -1376,11 +2279,11 @@
           saveBank();
           renderBankTable();
           uploadStatus.innerText = `✅ 成功匯入 ${newQ.length} 題！目前題庫共計 ${questionBank.length} 題。`;
-          uploadStatus.className = "font-bold mt-2 text-emerald-400";
+          uploadStatus.className = "font-bold mt-2 text-emerald-400 font-comic";
           uploadStatus.classList.remove('hidden');
         } catch (err) {
           uploadStatus.innerText = `❌ 匯入失敗：${err.message}`;
-          uploadStatus.className = "font-bold mt-2 text-red-400";
+          uploadStatus.className = "font-bold mt-2 text-red-400 font-comic";
           uploadStatus.classList.remove('hidden');
         }
         fileUploader.value = '';
@@ -1409,7 +2312,7 @@
       renderBankTable();
       e.target.reset();
       uploadStatus.innerText = "✅ 手動單題已成功儲存！";
-      uploadStatus.className = "font-bold mt-2 text-emerald-400";
+      uploadStatus.className = "font-bold mt-2 text-emerald-400 font-comic";
       uploadStatus.classList.remove('hidden');
     });
 
@@ -1425,17 +2328,17 @@
       saveBank();
       renderBankTable();
       uploadStatus.innerText = "已恢復為預設八大領域題庫！";
-      uploadStatus.className = "font-bold mt-2 text-amber-400";
+      uploadStatus.className = "font-bold mt-2 text-amber-400 font-comic";
       uploadStatus.classList.remove('hidden');
     });
 
-    // 下載範本 (JSON 與 CSV，涵蓋八科格式)
+    // 下載範本 (JSON 與 CSV)
     document.getElementById('btn-download-template-json').addEventListener('click', () => {
       const sample = [
         {
           "category": "國文",
           "level": 1,
-          "q": "題目內容示範：成語三顧茅廬是指誰？",
+          "q": "題目內容示範：成語三顧茅廬是指拜訪誰？",
           "options": ["關羽", "諸葛亮", "曹操", "孫權"],
           "ans": 1
         },
@@ -1464,23 +2367,36 @@
       a.remove();
     }
 
+    /* ========================================================
+       14. 遊戲開始、投幣與按鍵事件綁定
+       ======================================================== */
     function startGame() {
       sound.coin();
+      sound.startBGM();
       stagePassedCount = 0;
       playerPos = 0;
       lives = 3;
       totalScore = 0;
       totalCorrectCount = 0;
       totalWrongCount = 0;
+      comboCount = 0;
 
       screenStart.classList.add('hidden');
       screenResult.classList.add('hidden');
       screenQuiz.classList.add('hidden');
+      screenContinue.classList.add('hidden');
       screenBoard.classList.remove('hidden');
 
       buildBoardGrid();
       updateBoardUI();
     }
+
+    // 投幣按鈕
+    document.getElementById('btn-insert-coin').addEventListener('click', () => {
+      credits++;
+      creditBadge.innerText = `CREDIT: ${credits < 10 ? '0' + credits : credits}`;
+      sound.coin();
+    });
 
     // 選項按鈕點擊
     optionBtns.forEach(btn => {
@@ -1490,13 +2406,20 @@
       });
     });
 
-    // 鍵盤操控 (1~4 / A~D 答題，空白鍵投骰)
+    // 鍵盤操控支援 (1-4 / A-D, Space, C 投幣)
     window.addEventListener('keydown', (e) => {
       if (!modalBank.classList.contains('hidden')) return;
 
-      // 答題時
+      const k = e.key.toLowerCase();
+
+      // [C] 鍵投幣
+      if (k === 'c') {
+        document.getElementById('btn-insert-coin').click();
+        return;
+      }
+
+      // 答題時 [1-4] 或 [A-D]
       if (!screenQuiz.classList.contains('hidden')) {
-        const k = e.key.toLowerCase();
         if (k === '1' || k === 'a') handleAnswer(0);
         else if (k === '2' || k === 'b') handleAnswer(1);
         else if (k === '3' || k === 'c') handleAnswer(2);
@@ -1504,7 +2427,7 @@
         return;
       }
 
-      // 地圖投骰
+      // 地圖投骰 [Space] 或 [Enter]
       if (!screenBoard.classList.contains('hidden')) {
         if (e.code === 'Space' || e.code === 'Enter') {
           if (!btnRollDice.disabled) btnRollDice.click();
@@ -1524,13 +2447,24 @@
       screenResult.classList.add('hidden');
       screenQuiz.classList.add('hidden');
       screenBoard.classList.add('hidden');
+      screenContinue.classList.add('hidden');
       screenStart.classList.remove('hidden');
     });
 
+    // 音效開關切換
     document.getElementById('btn-sound-toggle').addEventListener('click', () => {
-      sound.enabled = !sound.enabled;
-      document.getElementById('sound-icon').innerText = sound.enabled ? '🔊' : '🔇';
-      document.getElementById('sound-status').innerText = sound.enabled ? '音效開' : '音效關';
+      sound.soundEnabled = !sound.soundEnabled;
+      document.getElementById('sound-icon').innerText = sound.soundEnabled ? '🔊' : '🔇';
+      document.getElementById('sound-text').innerText = sound.soundEnabled ? '音效開' : '音效關';
+    });
+
+    // BGM 開關切換
+    document.getElementById('btn-bgm-toggle').addEventListener('click', () => {
+      sound.bgmEnabled = !sound.bgmEnabled;
+      document.getElementById('bgm-icon').innerText = sound.bgmEnabled ? '🎵' : '🔇';
+      document.getElementById('bgm-text').innerText = sound.bgmEnabled ? 'BGM開' : 'BGM關';
+      if (sound.bgmEnabled) sound.startBGM();
+      else sound.stopBGM();
     });
 
     // 題庫彈窗控制
@@ -1546,6 +2480,7 @@
     // 啟動初始化
     initQuestionBank();
     buildBoardGrid();
+    updateStudentAvatar('normal');
   </script>
 </body>
 </html>
